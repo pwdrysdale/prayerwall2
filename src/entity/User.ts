@@ -1,18 +1,36 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import { GraphQLScalarType } from "graphql";
+import { Field, ID, ObjectType, Resolver } from "type-graphql";
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
 
+export enum UserRole {
+    loggedIn = "loggedIn",
+    admin = "admin",
+}
+
+@ObjectType()
 @Entity()
-export class User {
-
+export class User extends BaseEntity {
+    @Field((): GraphQLScalarType => ID)
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
-    firstName: string;
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    googleId: string;
 
-    @Column()
-    lastName: string;
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    twitterId: string;
 
-    @Column()
-    age: number;
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    githubId: string;
 
+    @Field()
+    @Column()
+    username: string;
+
+    @Field()
+    @Column({ default: UserRole.loggedIn, enum: UserRole })
+    role: string;
 }
