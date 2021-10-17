@@ -1,0 +1,6 @@
+mutation Mutation($prayerInput: PrayerInput!) {
+    addPrayer(PrayerInput: $prayerInput) {
+        title
+        body
+    }
+}

@@ -1,6 +1,14 @@
 import { GraphQLScalarType } from "graphql";
 import { Field, ID, ObjectType, Resolver } from "type-graphql";
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    BaseEntity,
+    OneToMany,
+} from "typeorm";
+import { Lazy } from "../utlis/lazyType";
+import { Prayer } from "./Prayer";
 
 export enum UserRole {
     loggedIn = "loggedIn",
@@ -25,6 +33,14 @@ export class User extends BaseEntity {
     @Field({ nullable: true })
     @Column({ nullable: true })
     githubId: string;
+
+    // @OneToMany(() => Prayer, (entry) => Prayer.user, {
+    @OneToMany(() => Prayer, (prayer) => prayer.user, {
+        lazy: true,
+        nullable: true,
+    })
+    @Field(() => [Prayer])
+    prayers: Lazy<Prayer[]>;
 
     @Field()
     @Column()

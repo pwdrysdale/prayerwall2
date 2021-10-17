@@ -11,23 +11,24 @@ const GitHubStrategy = require("passport-github").Strategy;
 passport.serializeUser(async (user: any, done: any) => {
     try {
         const { id } = user;
-        console.log("serialising");
         done(null, id);
+        return;
     } catch (err) {
         console.log(err);
         done(err, null);
+        return;
     }
 });
 
 passport.deserializeUser(async (id: any, done: any) => {
     try {
-        console.log("Deserialising");
-        const u = await User.findOne(id);
-        done(null, u);
+        const user: User = await User.findOne(id);
+        done(null, user);
+        return;
     } catch (err) {
-        console.log("tried to deserialise");
         console.log(err);
         done(err, null);
+        return;
     }
 });
 
@@ -50,9 +51,11 @@ passport.use(
                     });
                     await newUser.save();
                     cb(null, newUser);
+                    return;
                 }
 
                 cb(null, doc);
+                return;
             } catch (err) {
                 return cb(err, null);
             }
@@ -79,9 +82,11 @@ passport.use(
                     });
                     await newUser.save();
                     cb(null, newUser);
+                    return;
                 }
 
                 cb(null, doc);
+                return;
             } catch (err) {
                 return cb(err, null);
             }
@@ -107,9 +112,11 @@ passport.use(
                     });
                     await newUser.save();
                     cb(null, newUser);
+                    return;
                 }
 
                 cb(null, doc);
+                return;
             } catch (err) {
                 return cb(err, null);
             }

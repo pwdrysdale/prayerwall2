@@ -1,0 +1,6 @@
+query Query {
+    myPrayers {
+        title
+        body
+    }
+}
