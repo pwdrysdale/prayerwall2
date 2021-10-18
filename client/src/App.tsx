@@ -1,5 +1,6 @@
 import AddPrayer from "./components/AddPrayer/AddPrayer";
 import MyPrayers from "./components/MyPrayers/MyPrayers";
+import PublicPrayers from "./components/PublicPrayers/PublicPrayers";
 import AuthScreen from "./screens/AuthScreen/AuthScreen";
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
             <AuthScreen />
             <AddPrayer />
             <MyPrayers />
+            <PublicPrayers />
         </div>
     );
 }

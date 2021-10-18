@@ -12,6 +12,12 @@ import {
 import { User } from "./User";
 import { Lazy } from "../utlis/lazyType";
 
+export enum PrayerCategory {
+    "thanks" = "Thanks",
+    "sorry" = "Sorry",
+    "please" = "Please",
+}
+
 @ObjectType()
 @Entity()
 export class Prayer extends BaseEntity {
@@ -26,6 +32,18 @@ export class Prayer extends BaseEntity {
     @Field()
     @Column()
     body: string;
+
+    @Field()
+    @Column({ enum: PrayerCategory, default: PrayerCategory.thanks })
+    category: PrayerCategory;
+
+    @Field()
+    @Column({ default: false })
+    answered: boolean;
+
+    @Field()
+    @Column({ default: true })
+    privat: boolean;
 
     @Field(() => User, { nullable: true })
     @ManyToOne(() => User, { lazy: true, nullable: true })

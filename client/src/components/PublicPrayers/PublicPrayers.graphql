@@ -1,5 +1,5 @@
 query Query {
-    myPrayers {
+    publicPrayers {
         title
         body
         category

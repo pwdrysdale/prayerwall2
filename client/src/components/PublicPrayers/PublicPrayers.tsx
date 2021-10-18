@@ -1,18 +1,14 @@
-import { useQuery } from "@apollo/client";
-import { useEffect } from "react";
+import React from "react";
 
 import { loader } from "graphql.macro";
 import { Prayer } from "../../types";
-const myPrayers = loader("./MyPrayers.graphql");
+import { useQuery } from "@apollo/client";
+const publicPrayers = loader("./PublicPrayers.graphql");
 
-const MyPrayers = () => {
-    const { data, loading, error } = useQuery(myPrayers, {
+const PublicPrayers = () => {
+    const { data, loading, error } = useQuery(publicPrayers, {
         errorPolicy: "all",
     });
-
-    useEffect(() => {
-        console.log(data && data.myPrayers);
-    }, [data]);
 
     if (loading) return <div>Loading...</div>;
     if (error) {
@@ -20,19 +16,19 @@ const MyPrayers = () => {
         return <div>Sorry, there was an error...</div>;
     }
 
-    if (data.myPrayers === null) {
-        return <div>Login to create some prayers!</div>;
+    if (data.publicPrayers === null) {
+        return <div>Returned null data</div>;
     }
 
-    if (data.myPrayers.length === 0) {
+    if (data.publicPrayers.length === 0) {
         return <div>You don't have any prayers yet!</div>;
     }
 
     return (
         <div>
-            <h1>My Prayers</h1>
+            <h1>Public Prayers</h1>
             <div>
-                {data.myPrayers.map((P: Prayer, idx: number) => (
+                {data.publicPrayers.map((P: Prayer, idx: number) => (
                     <div key={idx}>
                         <div>{P.title}</div>
                         <div>{P.body}</div>
@@ -49,4 +45,4 @@ const MyPrayers = () => {
     // return <div>Something</div>;
 };
 
-export default MyPrayers;
+export default PublicPrayers;
