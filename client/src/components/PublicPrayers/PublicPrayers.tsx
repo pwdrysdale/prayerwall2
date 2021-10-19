@@ -3,12 +3,28 @@ import React from "react";
 import { loader } from "graphql.macro";
 import { Prayer } from "../../types";
 import { useQuery } from "@apollo/client";
+import moment from "moment";
+import Button from "../HTML/Button";
 const publicPrayers = loader("./PublicPrayers.graphql");
 
 const PublicPrayers = () => {
-    const { data, loading, error } = useQuery(publicPrayers, {
+    const { data, loading, error, refetch } = useQuery(publicPrayers, {
         errorPolicy: "all",
+        variables: { cursor: "" },
     });
+
+    // const next = () => {
+    //     const cursor: string = data.publicPrayers[data.publicPrayers.length - 1].createdDate
+
+    //     const { data: newData } = useQuery(publicPrayers,{errorPolicy: 'all', variables: {cursor}})
+
+    //     return
+
+    // }
+
+    // React.useEffect(() => {
+    //     console.log(data);
+    // }, [data]);
 
     if (loading) return <div>Loading...</div>;
     if (error) {
@@ -30,6 +46,7 @@ const PublicPrayers = () => {
             <div>
                 {data.publicPrayers.map((P: Prayer, idx: number) => (
                     <div key={idx}>
+                        <div>{P.user?.username}</div>
                         <div>{P.title}</div>
                         <div>{P.body}</div>
                         <div>{P.privat ? "Private" : "Public"}</div>
@@ -37,8 +54,20 @@ const PublicPrayers = () => {
                         <div>
                             {P.answered ? "Answered" : "Not answered yet"}
                         </div>
+                        <div>{moment(P.createdDate).format("LLLL")}</div>
                     </div>
                 ))}
+                <Button
+                    title="Next"
+                    onClick={() => {
+                        const cursor: string =
+                            data.publicPrayers[data.publicPrayers.length - 1]
+                                .createdDate;
+                        refetch({
+                            cursor,
+                        });
+                    }}
+                />
             </div>
         </div>
     );

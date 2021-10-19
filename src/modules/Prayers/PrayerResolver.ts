@@ -1,18 +1,38 @@
 import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import { FindManyOptions, LessThan, MoreThan } from "typeorm";
 import { Prayer } from "../../entity/Prayer";
 import { User } from "../../entity/User";
 import { AppContext } from "../../utlis/context";
 import { PrayerInput } from "./inputs/PrayerInput";
 
+import { format } from "date-fns";
+
 @Resolver()
 export class PrayerResolver {
     @Query((): typeof Prayer[] => [Prayer], { nullable: true })
-    async publicPrayers(): Promise<Prayer[] | null> {
+    async publicPrayers(
+        @Arg("cursor", { nullable: true }) cursor: string
+    ): Promise<Prayer[] | null> {
         try {
-            const p: Prayer[] = await Prayer.find({ where: { privat: false } });
-            console.log(p);
+            const options: FindManyOptions<Prayer> = {
+                take: 2,
+                order: { createdDate: "DESC" },
+                where: { privat: false },
+                relations: ["user"],
+            };
+
+            if (cursor) {
+                options.where = {
+                    createdDate: LessThan(
+                        format(new Date(cursor), "yyyy-MM-dd HH:mm:ss")
+                    ),
+                    privat: false,
+                };
+            }
+
+            const p: Prayer[] = await Prayer.find(options);
             if (p) {
-                console.log("Returning the prayers");
+                console.log(p);
                 return p;
             } else return null;
         } catch (error) {
@@ -47,6 +67,10 @@ export class PrayerResolver {
         @Ctx() { req }: AppContext
     ): Promise<Prayer | null> {
         try {
+            if (!req.user) {
+                return null;
+            }
+
             return await Prayer.create({
                 title,
                 body,

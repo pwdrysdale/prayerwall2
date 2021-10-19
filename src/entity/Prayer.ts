@@ -10,7 +10,6 @@ import {
     UpdateDateColumn,
 } from "typeorm";
 import { User } from "./User";
-import { Lazy } from "../utlis/lazyType";
 
 export enum PrayerCategory {
     "thanks" = "Thanks",
@@ -46,8 +45,8 @@ export class Prayer extends BaseEntity {
     privat: boolean;
 
     @Field(() => User, { nullable: true })
-    @ManyToOne(() => User, { lazy: true, nullable: true })
-    user: Lazy<User>;
+    @ManyToOne(() => User, { nullable: true })
+    user: User;
 
     @Field()
     @CreateDateColumn({

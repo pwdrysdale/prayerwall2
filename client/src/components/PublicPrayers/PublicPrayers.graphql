@@ -1,9 +1,13 @@
-query Query {
-    publicPrayers {
+query Query($cursor: String) {
+    publicPrayers(cursor: $cursor) {
         title
         body
         category
         answered
         privat
+        user {
+            username
+        }
+        createdDate
     }
 }

@@ -1,3 +1,5 @@
+import { User } from ".";
+
 export enum PrayerCategory {
     "thanks" = "Thanks",
     "sorry" = "Sorry",
@@ -9,5 +11,7 @@ export interface Prayer {
     body: string;
     privat: boolean;
     answered: boolean;
+    user: User;
     category: PrayerCategory;
+    createdDate: Date;
 }

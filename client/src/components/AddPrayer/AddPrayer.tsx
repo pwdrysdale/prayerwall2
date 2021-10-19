@@ -18,7 +18,7 @@ const AddPrayer = () => {
         awaitRefetchQueries: true,
         refetchQueries: [
             { query: MyPrayerQuery },
-            { query: PublicPrayerQuery },
+            { query: PublicPrayerQuery, variables: { cursor: "" } },
         ],
     });
     const onSubmit = useCallback(
