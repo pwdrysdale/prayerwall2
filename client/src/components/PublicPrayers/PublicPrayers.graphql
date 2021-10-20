@@ -7,7 +7,12 @@ query Query($cursor: String) {
         privat
         user {
             username
+            id
         }
         createdDate
+    }
+    me {
+        id
+        username
     }
 }

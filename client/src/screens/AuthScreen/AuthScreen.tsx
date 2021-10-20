@@ -31,7 +31,7 @@ const AuthScreen = () => {
         <div>
             <div>Login: {me.me?.username || "Anonymous User"}</div>
             <div>
-                Userrole: {me.Me?.role || "Anonymous Users do not have a role"}
+                Userrole: {me.me?.role || "Anonymous Users do not have a role"}
             </div>
             <Button onClick={googleLogin} title="Login with Google" />
             <Button onClick={twitterLogin} title="Login with Twitter" />

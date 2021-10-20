@@ -7,6 +7,7 @@ export enum PrayerCategory {
 }
 
 export interface Prayer {
+    id: number;
     title: string;
     body: string;
     privat: boolean;

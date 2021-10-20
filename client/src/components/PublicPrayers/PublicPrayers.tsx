@@ -47,6 +47,9 @@ const PublicPrayers = () => {
                 {data.publicPrayers.map((P: Prayer, idx: number) => (
                     <div key={idx}>
                         <div>{P.user?.username}</div>
+                        {data.me && P.user?.id === data.me?.id && (
+                            <h2>Delete</h2>
+                        )}
                         <div>{P.title}</div>
                         <div>{P.body}</div>
                         <div>{P.privat ? "Private" : "Public"}</div>

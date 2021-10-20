@@ -1,5 +1,6 @@
 query Query {
     myPrayers {
+        id
         title
         body
         category

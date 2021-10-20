@@ -1,7 +1,7 @@
 import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { FindManyOptions, LessThan, MoreThan } from "typeorm";
 import { Prayer } from "../../entity/Prayer";
-import { User } from "../../entity/User";
+import { User, UserRole } from "../../entity/User";
 import { AppContext } from "../../utlis/context";
 import { PrayerInput } from "./inputs/PrayerInput";
 
@@ -60,6 +60,22 @@ export class PrayerResolver {
         }
     }
 
+    @Query(() => Prayer, { nullable: true })
+    async onePrayer(
+        @Ctx() { req }: AppContext,
+        @Arg("id") id: number
+    ): Promise<Prayer | null> {
+        try {
+            const p = await Prayer.findOne(id);
+            if (p && (p.privat === false || p.user.id === req.user.id)) {
+                return p;
+            } else return null;
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
+    }
+
     @Mutation(() => Prayer)
     async addPrayer(
         @Arg("PrayerInput")
@@ -81,6 +97,34 @@ export class PrayerResolver {
             }).save();
         } catch {
             return null;
+        }
+    }
+
+    @Mutation(() => Boolean)
+    async deletePrayer(
+        @Arg("id")
+        id: number,
+        @Ctx() { req }: AppContext
+    ): Promise<Boolean> {
+        console.log("In delete");
+        console.log(id);
+        try {
+            if (!req.user) {
+                return false;
+            }
+
+            const p: Prayer = await Prayer.findOne(id);
+
+            if (
+                req.user.role === UserRole.loggedIn ||
+                p.user.id === req.user.id
+            ) {
+                await Prayer.delete(id);
+                return true;
+            }
+            return false;
+        } catch {
+            return false;
         }
     }
 }

@@ -1,0 +1,7 @@
+query Query($id: Float!) {
+    onePrayer(id: $id) {
+        id
+        title
+        body
+    }
+}
