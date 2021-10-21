@@ -31,12 +31,6 @@ const AddPrayer = () => {
                 answeredRef.current &&
                 categoryRef.current
             ) {
-                console.log(
-                    "Body: ",
-                    bodyRef.current.value,
-                    "Title: ",
-                    titleRef.current.value
-                );
                 addPrayer({
                     variables: {
                         prayerInput: {
@@ -56,7 +50,7 @@ const AddPrayer = () => {
 
     return (
         <div>
-            Add a prayer here
+            <h1>Add a prayer here</h1>
             <form onSubmit={onSubmit}>
                 <div className="form-group">
                     <label htmlFor="title">Title:</label>

@@ -6,6 +6,7 @@ import { AppContext } from "../../utlis/context";
 import { PrayerInput } from "./inputs/PrayerInput";
 
 import { format } from "date-fns";
+import { EditPrayerInput } from "./inputs/EditPrayerInput";
 
 @Resolver()
 export class PrayerResolver {
@@ -32,7 +33,6 @@ export class PrayerResolver {
 
             const p: Prayer[] = await Prayer.find(options);
             if (p) {
-                console.log(p);
                 return p;
             } else return null;
         } catch (error) {
@@ -51,7 +51,6 @@ export class PrayerResolver {
             const p: Prayer[] = await req.user.prayers;
 
             if (p) {
-                console.log("Returning the prayers");
                 return p;
             } else return null;
         } catch (error) {
@@ -95,6 +94,44 @@ export class PrayerResolver {
                 category,
                 user: req.user,
             }).save();
+        } catch {
+            return null;
+        }
+    }
+
+    @Mutation(() => Prayer, { nullable: true })
+    async editPrayer(
+        @Arg("EditPrayerInput")
+        { id, title, body, category, answered, privat }: EditPrayerInput,
+        @Ctx() { req }: AppContext
+    ): Promise<Prayer | null> {
+        try {
+            console.log("In edit prayer");
+            if (!req.user) {
+                console.log("no user");
+                return null;
+            }
+
+            const p: Prayer = await Prayer.findOne(id, { relations: ["user"] });
+            console.log("Prayer to edit: ", p);
+            if (p.user.id !== req.user.id) {
+                console.log("Not who you say you are");
+                console.log(p.user);
+                console.log(req.user);
+                return null;
+            } else {
+                console.log("updating apparently");
+                const u = Object.assign(p, {
+                    title,
+                    body,
+                    category,
+                    answered,
+                    privat,
+                });
+
+                const d: Prayer = await u.save();
+                return d;
+            }
         } catch {
             return null;
         }

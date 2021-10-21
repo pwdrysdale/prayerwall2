@@ -1,0 +1,10 @@
+mutation Mutation($editPrayerInput: EditPrayerInput!) {
+    editPrayer(EditPrayerInput: $editPrayerInput) {
+        title
+        body
+        privat
+        category
+        answered
+        createdDate
+    }
+}
