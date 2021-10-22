@@ -1,5 +1,6 @@
 query Query($cursor: String) {
     publicPrayers(cursor: $cursor) {
+        id
         title
         body
         category
@@ -7,6 +8,9 @@ query Query($cursor: String) {
         privat
         user {
             username
+            id
+        }
+        comments {
             id
         }
         createdDate

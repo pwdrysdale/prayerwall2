@@ -67,8 +67,6 @@ const EditPrayer: React.FC<Component> = ({ match }) => {
                 category,
             };
 
-            console.log(editPrayerInput);
-
             editPrayer({
                 variables: {
                     editPrayerInput,

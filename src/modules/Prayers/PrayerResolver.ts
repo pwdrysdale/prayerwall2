@@ -7,6 +7,8 @@ import { PrayerInput } from "./inputs/PrayerInput";
 
 import { format } from "date-fns";
 import { EditPrayerInput } from "./inputs/EditPrayerInput";
+import { PrayerComments } from "../../entity/PrayerComments";
+import { PrayerCommentInput } from "./inputs/PrayerCommentInput";
 
 @Resolver()
 export class PrayerResolver {
@@ -19,7 +21,7 @@ export class PrayerResolver {
                 take: 2,
                 order: { createdDate: "DESC" },
                 where: { privat: false },
-                relations: ["user"],
+                relations: ["user", "comments"],
             };
 
             if (cursor) {
@@ -65,7 +67,9 @@ export class PrayerResolver {
         @Arg("id") id: number
     ): Promise<Prayer | null> {
         try {
-            const p = await Prayer.findOne(id);
+            const p = await Prayer.findOne(id, {
+                relations: ["user", "comments"],
+            });
             if (p && (p.privat === false || p.user.id === req.user.id)) {
                 return p;
             } else return null;
@@ -112,7 +116,9 @@ export class PrayerResolver {
                 return null;
             }
 
-            const p: Prayer = await Prayer.findOne(id, { relations: ["user"] });
+            const p: Prayer = await Prayer.findOne(id, {
+                relations: ["user", "comments"],
+            });
             console.log("Prayer to edit: ", p);
             if (p.user.id !== req.user.id) {
                 console.log("Not who you say you are");
@@ -162,6 +168,31 @@ export class PrayerResolver {
             return false;
         } catch {
             return false;
+        }
+    }
+
+    @Mutation(() => PrayerComments)
+    async addComment(
+        @Ctx() { req }: AppContext,
+        @Arg("PrayerCommentInput")
+        { body, prayerId, privat }: PrayerCommentInput
+    ): Promise<PrayerComments | null> {
+        try {
+            if (!req.user) {
+                return null;
+            }
+
+            const prayer = await Prayer.findOne(prayerId);
+            const user = await User.findOne(req.user);
+
+            return await PrayerComments.create({
+                body,
+                privat,
+                prayer,
+                user,
+            }).save();
+        } catch {
+            return null;
         }
     }
 }

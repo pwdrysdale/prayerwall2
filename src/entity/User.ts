@@ -9,6 +9,7 @@ import {
 } from "typeorm";
 import { Lazy } from "../utlis/lazyType";
 import { Prayer } from "./Prayer";
+import { PrayerComments } from "./PrayerComments";
 
 export enum UserRole {
     loggedIn = "loggedIn",
@@ -41,6 +42,13 @@ export class User extends BaseEntity {
     })
     @Field(() => [Prayer])
     prayers: Lazy<Prayer[]>;
+
+    @OneToMany(() => PrayerComments, (comment) => comment.user, {
+        lazy: true,
+        nullable: true,
+    })
+    @Field(() => [PrayerComments])
+    comments: Lazy<PrayerComments[]>;
 
     @Field()
     @Column()

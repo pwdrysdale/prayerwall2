@@ -5,6 +5,7 @@ import { Prayer } from "../../types";
 import { useQuery } from "@apollo/client";
 import moment from "moment";
 import Button from "../HTML/Button";
+import { Link } from "react-router-dom";
 const publicPrayers = loader("./PublicPrayers.graphql");
 
 const PublicPrayers = () => {
@@ -57,7 +58,11 @@ const PublicPrayers = () => {
                         <div>
                             {P.answered ? "Answered" : "Not answered yet"}
                         </div>
+                        <div>{P.comments.length} Comments</div>
                         <div>{moment(P.createdDate).format("LLLL")}</div>
+                        <Link to={`/prayer/addcomment/${P.id}`}>
+                            <h1>Add a comment</h1>
+                        </Link>
                     </div>
                 ))}
                 <Button

@@ -1,0 +1,5 @@
+mutation Mutation($prayerCommentInput: PrayerCommentInput!) {
+    addComment(PrayerCommentInput: $prayerCommentInput) {
+        id
+    }
+}

@@ -8,6 +8,10 @@ query Query($id: Float!) {
         answered
         comments {
             id
+            body
         }
+    }
+    me {
+        username
     }
 }

@@ -10,7 +10,7 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from "typeorm";
-import { PrayerComments } from "./PrayerComments";
+import { Prayer } from "./Prayer";
 import { User } from "./User";
 
 export enum PrayerCategory {
@@ -21,38 +21,26 @@ export enum PrayerCategory {
 
 @ObjectType()
 @Entity()
-export class Prayer extends BaseEntity {
+export class PrayerComments extends BaseEntity {
     @Field((): GraphQLScalarType => ID)
     @PrimaryGeneratedColumn()
     id: number;
 
     @Field()
     @Column()
-    title: string;
-
-    @Field()
-    @Column()
     body: string;
-
-    @Field()
-    @Column({ enum: PrayerCategory, default: PrayerCategory.thanks })
-    category: PrayerCategory;
-
-    @Field()
-    @Column({ default: false })
-    answered: boolean;
 
     @Field()
     @Column({ default: true })
     privat: boolean;
 
     @Field(() => User, { nullable: true })
-    @ManyToOne(() => User, { nullable: true })
+    @ManyToOne(() => User, (user) => user.comments, { nullable: true })
     user: User;
 
-    @Field(() => [PrayerComments])
-    @OneToMany(() => PrayerComments, (comments) => comments.prayer)
-    comments: [PrayerComments];
+    @Field(() => Prayer, { nullable: true })
+    @ManyToOne(() => Prayer, (prayer) => prayer.comments)
+    prayer: Prayer;
 
     @Field()
     @CreateDateColumn({
