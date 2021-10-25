@@ -2,17 +2,26 @@ import React from "react";
 
 import { loader } from "graphql.macro";
 import { Prayer } from "../../types";
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import moment from "moment";
 import Button from "../HTML/Button";
 import { Link } from "react-router-dom";
 const publicPrayers = loader("./PublicPrayers.graphql");
+const deletePrayerMutation = loader("../MyPrayers/deletePrayer.graphql");
 
 const PublicPrayers = () => {
     const { data, loading, error, refetch } = useQuery(publicPrayers, {
         errorPolicy: "all",
         variables: { cursor: "" },
     });
+
+    const [deletePrayer, { loading: deleteLoading }] = useMutation(
+        deletePrayerMutation,
+        {
+            awaitRefetchQueries: true,
+            refetchQueries: [{ query: publicPrayers }],
+        }
+    );
 
     // const next = () => {
     //     const cursor: string = data.publicPrayers[data.publicPrayers.length - 1].createdDate
@@ -27,7 +36,7 @@ const PublicPrayers = () => {
     //     console.log(data);
     // }, [data]);
 
-    if (loading) return <div>Loading...</div>;
+    if (loading || deleteLoading) return <div>Loading...</div>;
     if (error) {
         console.error(error);
         return <div>Sorry, there was an error...</div>;
@@ -49,7 +58,20 @@ const PublicPrayers = () => {
                     <div key={idx}>
                         <div>{P.user?.username}</div>
                         {data.me && P.user?.id === data.me?.id && (
-                            <h2>Delete</h2>
+                            <h2
+                                onClick={() => {
+                                    deletePrayer({
+                                        variables: {
+                                            id:
+                                                typeof P.id === "string"
+                                                    ? parseFloat(P.id)
+                                                    : P.id,
+                                        },
+                                    });
+                                }}
+                            >
+                                Delete Prayer
+                            </h2>
                         )}
                         <div>{P.title}</div>
                         <div>{P.body}</div>
@@ -60,7 +82,13 @@ const PublicPrayers = () => {
                         </div>
                         <div>{P.comments.length} Comments</div>
                         <div>{moment(P.createdDate).format("LLLL")}</div>
-                        <Link to={`/prayer/addcomment/${P.id}`}>
+                        <Link
+                            to={`/prayer/addcomment/${
+                                typeof P.id === "string"
+                                    ? parseFloat(P.id)
+                                    : P.id
+                            }`}
+                        >
                             <h1>Add a comment</h1>
                         </Link>
                     </div>

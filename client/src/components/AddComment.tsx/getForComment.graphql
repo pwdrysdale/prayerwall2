@@ -9,6 +9,10 @@ query Query($id: Float!) {
         comments {
             id
             body
+            createdDate
+            user {
+                username
+            }
         }
     }
     me {

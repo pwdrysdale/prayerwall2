@@ -68,7 +68,7 @@ export class PrayerResolver {
     ): Promise<Prayer | null> {
         try {
             const p = await Prayer.findOne(id, {
-                relations: ["user", "comments"],
+                relations: ["user", "comments", "comments.user"],
             });
             if (p && (p.privat === false || p.user.id === req.user.id)) {
                 return p;
@@ -156,17 +156,17 @@ export class PrayerResolver {
                 return false;
             }
 
-            const p: Prayer = await Prayer.findOne(id);
-
-            if (
-                req.user.role === UserRole.loggedIn ||
-                p.user.id === req.user.id
-            ) {
+            const p: Prayer = await Prayer.findOne(id, { relations: ["user"] });
+            console.log(p);
+            console.log(p.user.id === req.user.id);
+            if (req.user.role === UserRole.admin || p.user.id === req.user.id) {
                 await Prayer.delete(id);
+                console.log("deleted");
                 return true;
             }
             return false;
-        } catch {
+        } catch (err) {
+            console.log(err);
             return false;
         }
     }
@@ -193,6 +193,31 @@ export class PrayerResolver {
             }).save();
         } catch {
             return null;
+        }
+    }
+
+    @Mutation(() => Boolean)
+    async deleteComment(
+        @Ctx() { req }: AppContext,
+        @Arg("id") id: number
+    ): Promise<boolean> {
+        try {
+            if (!req.user) {
+                return false;
+            }
+
+            const comment: PrayerComments = await PrayerComments.findOne(id, {
+                relations: ["user"],
+            });
+
+            if (comment.user.id === req.user.id) {
+                await PrayerComments.delete(id);
+                return true;
+            } else {
+                return false;
+            }
+        } catch {
+            return false;
         }
     }
 }

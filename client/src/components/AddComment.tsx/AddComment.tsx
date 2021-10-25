@@ -3,6 +3,7 @@ import React, { FormEvent, useState, useEffect } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { loader } from "graphql.macro";
 import { PrayerComments } from "../../types";
+import moment from "moment";
 
 const onePrayerQ = loader("./getForComment.graphql");
 const addComm = loader("./AddComment.graphql");
@@ -92,6 +93,10 @@ const AddComment: React.FC<Component> = ({ match }) => {
                         ? "This prayer does not have any comments on it yet. Be the first to add one!"
                         : comments.map((c: PrayerComments, idx: number) => (
                               <div key={idx}>
+                                  <div>
+                                      {c.user?.username} on{" "}
+                                      {moment(c.createdDate).format("LLLL")}
+                                  </div>
                                   <div>{c.body}</div>
                               </div>
                           ))}

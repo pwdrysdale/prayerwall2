@@ -39,7 +39,9 @@ export class PrayerComments extends BaseEntity {
     user: User;
 
     @Field(() => Prayer, { nullable: true })
-    @ManyToOne(() => Prayer, (prayer) => prayer.comments)
+    @ManyToOne(() => Prayer, (prayer) => prayer.comments, {
+        onDelete: "CASCADE",
+    })
     prayer: Prayer;
 
     @Field()

@@ -33,6 +33,7 @@ const startUp = async () => {
                 req,
                 res,
             }),
+            introspection: false,
             formatResponse: (response, requestContext) => {
                 if (requestContext.response && requestContext.response.http) {
                     requestContext.response.http.headers.set(
