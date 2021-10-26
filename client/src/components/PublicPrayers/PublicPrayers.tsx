@@ -73,7 +73,7 @@ const PublicPrayers = () => {
                                 Delete Prayer
                             </h2>
                         )}
-                        <div>{P.title}</div>
+                        <h3>{P.title}</h3>
                         <div>{P.body}</div>
                         <div>{P.privat ? "Private" : "Public"}</div>
                         <div>{P.category}</div>

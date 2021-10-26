@@ -30,7 +30,7 @@ const Events = () => {
 
     return (
         <div>
-            <h1>This is the events</h1>
+            <h1>This is the Events Subscription</h1>
             {events.map((event: any) => (
                 <div key={event.id}>{event.event}</div>
             ))}

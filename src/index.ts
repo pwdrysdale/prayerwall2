@@ -2,9 +2,9 @@ import express, { Express, Request, Response } from "express";
 import { ApolloServer } from "apollo-server-express";
 import { GraphQLSchema } from "graphql";
 import cors, { CorsOptions } from "cors";
-import { buildSchema, Query, Resolver } from "type-graphql";
+import { buildSchema } from "type-graphql";
 import "reflect-metadata";
-import { createConnection, EventSubscriber } from "typeorm";
+import { createConnection } from "typeorm";
 import { authChecker } from "./utlis/authChecker";
 import { UserResolver } from "./modules/Users/UsersResolver";
 import passport from "passport";
@@ -14,7 +14,6 @@ import dotenv from "dotenv";
 import { createServer } from "http";
 import { execute, subscribe } from "graphql";
 import { SubscriptionServer } from "subscriptions-transport-ws";
-import { makeExecutableSchema } from "@graphql-tools/schema";
 
 import passportRoutes from "./utlis/passportRoutes";
 import { PrayerResolver } from "./modules/Prayers/PrayerResolver";
@@ -112,10 +111,11 @@ const startUp = async () => {
         await server.start();
         server.applyMiddleware({ app });
 
-        const subscriptionServer = SubscriptionServer.create(
-            { schema, execute, subscribe },
-            { server: httpServer, path: "/subscriptions" }
-        );
+        const subscriptionServer: SubscriptionServer =
+            SubscriptionServer.create(
+                { schema, execute, subscribe },
+                { server: httpServer, path: "/subscriptions" }
+            );
 
         return { app, server };
     } catch (err) {

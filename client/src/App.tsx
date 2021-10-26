@@ -7,6 +7,7 @@ import Events from "./components/Events/Events";
 import MyPrayers from "./components/MyPrayers/MyPrayers";
 import Navbar from "./components/Navbar/Navbar";
 import PublicPrayers from "./components/PublicPrayers/PublicPrayers";
+import Toasts from "./components/Toasts/Toasts";
 import AuthScreen from "./screens/AuthScreen/AuthScreen";
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
                 />
             </Switch>
             <Events />
+            <Toasts />
         </Router>
     );
 }

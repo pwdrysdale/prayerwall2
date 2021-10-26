@@ -1,5 +1,5 @@
 import { useMutation } from "@apollo/client";
-import React, { FormEvent, useCallback, useRef } from "react";
+import React, { FormEvent, useCallback, useEffect, useRef } from "react";
 
 import { loader } from "graphql.macro";
 import { PrayerCategory } from "../../types";
@@ -14,13 +14,17 @@ const AddPrayer = () => {
     const answeredRef = useRef<HTMLInputElement>(null);
     const categoryRef = useRef<HTMLSelectElement>(null);
 
-    const [addPrayer] = useMutation(AddPrayerMutation, {
+    const [addPrayer, { error }] = useMutation(AddPrayerMutation, {
         awaitRefetchQueries: true,
         refetchQueries: [
             { query: MyPrayerQuery },
             { query: PublicPrayerQuery, variables: { cursor: "" } },
         ],
+        errorPolicy: "all",
     });
+
+    useEffect(() => console.log(error?.message), [error]);
+
     const onSubmit = useCallback(
         (event: FormEvent<HTMLFormElement>) => {
             event.preventDefault();
