@@ -1,14 +1,18 @@
-import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
-import { FindManyOptions, LessThan, MoreThan } from "typeorm";
+import { Arg, Ctx, Mutation, Query, Resolver, PubSub } from "type-graphql";
+import { FindManyOptions, LessThan } from "typeorm";
 import { Prayer } from "../../entity/Prayer";
 import { User, UserRole } from "../../entity/User";
 import { AppContext } from "../../utlis/context";
 import { PrayerInput } from "./inputs/PrayerInput";
 
+import { v4 as uuid } from "uuid";
+
 import { format } from "date-fns";
 import { EditPrayerInput } from "./inputs/EditPrayerInput";
 import { PrayerComments } from "../../entity/PrayerComments";
 import { PrayerCommentInput } from "./inputs/PrayerCommentInput";
+import { PubSubEngine } from "graphql-subscriptions";
+import { EventsSubscription } from "../EventsSub/EventsSubscription";
 
 @Resolver()
 export class PrayerResolver {
@@ -83,14 +87,15 @@ export class PrayerResolver {
     async addPrayer(
         @Arg("PrayerInput")
         { title, body, category, answered, privat }: PrayerInput,
-        @Ctx() { req }: AppContext
+        @Ctx() { req }: AppContext,
+        @PubSub() pubSub: PubSubEngine
     ): Promise<Prayer | null> {
         try {
             if (!req.user) {
                 return null;
             }
 
-            return await Prayer.create({
+            const p = await Prayer.create({
                 title,
                 body,
                 privat,
@@ -98,7 +103,17 @@ export class PrayerResolver {
                 category,
                 user: req.user,
             }).save();
-        } catch {
+
+            if (!privat) {
+                const event = `${req.user.username} created the prayer \"${title}\"`;
+                pubSub.publish("EVENTS", {
+                    event,
+                });
+            }
+
+            return p;
+        } catch (err) {
+            console.log(err);
             return null;
         }
     }

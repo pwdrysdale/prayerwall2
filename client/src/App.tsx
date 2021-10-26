@@ -3,6 +3,7 @@ import AddComment from "./components/AddComment.tsx/AddComment";
 
 import AddPrayer from "./components/AddPrayer/AddPrayer";
 import EditPrayer from "./components/EditPrayer/EditPrayer";
+import Events from "./components/Events/Events";
 import MyPrayers from "./components/MyPrayers/MyPrayers";
 import Navbar from "./components/Navbar/Navbar";
 import PublicPrayers from "./components/PublicPrayers/PublicPrayers";
@@ -27,6 +28,7 @@ function App() {
                     exact
                 />
             </Switch>
+            <Events />
         </Router>
     );
 }

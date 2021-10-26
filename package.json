@@ -28,6 +28,7 @@
         "typescript": "3.3.3333"
     },
     "dependencies": {
+        "@graphql-tools/schema": "^8.3.0",
         "apollo-server": "^3.4.0",
         "apollo-server-express": "^3.4.0",
         "class-validator": "^0.13.1",
@@ -43,6 +44,7 @@
         "passport-twitter": "^1.0.4",
         "pg": "^8.7.1",
         "reflect-metadata": "^0.1.10",
+        "subscriptions-transport-ws": "^0.9.19",
         "type-graphql": "^1.1.1",
         "typeorm": "0.2.32"
     }

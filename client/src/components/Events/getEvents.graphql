@@ -1,0 +1,7 @@
+subscription {
+    newEvent {
+        event
+        date
+        id
+    }
+}

@@ -4,14 +4,21 @@ import { GraphQLSchema } from "graphql";
 import cors, { CorsOptions } from "cors";
 import { buildSchema, Query, Resolver } from "type-graphql";
 import "reflect-metadata";
-import { createConnection } from "typeorm";
+import { createConnection, EventSubscriber } from "typeorm";
 import { authChecker } from "./utlis/authChecker";
 import { UserResolver } from "./modules/Users/UsersResolver";
 import passport from "passport";
 import session from "express-session";
 import dotenv from "dotenv";
+
+import { createServer } from "http";
+import { execute, subscribe } from "graphql";
+import { SubscriptionServer } from "subscriptions-transport-ws";
+import { makeExecutableSchema } from "@graphql-tools/schema";
+
 import passportRoutes from "./utlis/passportRoutes";
 import { PrayerResolver } from "./modules/Prayers/PrayerResolver";
+import { EventsSubscription } from "./modules/EventsSub/EventsSubscription";
 
 const startUp = async () => {
     try {
@@ -21,34 +28,6 @@ const startUp = async () => {
 
         const app: Express = express();
         app.use(express.json());
-
-        const schema: GraphQLSchema = await buildSchema({
-            resolvers: [UserResolver, PrayerResolver],
-            authChecker: authChecker,
-        });
-
-        const server = new ApolloServer({
-            schema,
-            context: ({ req, res }): { req: Request; res: Response } => ({
-                req,
-                res,
-            }),
-            introspection: false,
-            formatResponse: (response, requestContext) => {
-                if (requestContext.response && requestContext.response.http) {
-                    requestContext.response.http.headers.set(
-                        "Access-Control-Allow-Origin",
-                        "http://localhost:3000"
-                        // "https://studio.apollographql.com"
-                    );
-                    requestContext.response.http.headers.set(
-                        "Access-Control-Allow-Credentials",
-                        "true"
-                    );
-                }
-                return response;
-            },
-        });
 
         app.use(
             session({
@@ -86,12 +65,57 @@ const startUp = async () => {
 
         app.use(cors(corsOptions));
 
+        const httpServer = createServer(app);
+        httpServer.listen({ port: 4000 }, () => {
+            console.log("HTTP server running on 4000");
+        });
+
+        const schema: GraphQLSchema = await buildSchema({
+            resolvers: [UserResolver, PrayerResolver, EventsSubscription],
+            authChecker: authChecker,
+        });
+
+        const server = new ApolloServer({
+            introspection: false,
+            schema,
+            plugins: [
+                {
+                    async serverWillStart() {
+                        return {
+                            async drainServer() {
+                                subscriptionServer.close();
+                            },
+                        };
+                    },
+                },
+            ],
+            context: ({ req, res }): { req: Request; res: Response } => ({
+                req,
+                res,
+            }),
+            formatResponse: (response, requestContext) => {
+                if (requestContext.response && requestContext.response.http) {
+                    requestContext.response.http.headers.set(
+                        "Access-Control-Allow-Origin",
+                        "http://localhost:3000"
+                        // "https://studio.apollographql.com"
+                    );
+                    requestContext.response.http.headers.set(
+                        "Access-Control-Allow-Credentials",
+                        "true"
+                    );
+                }
+                return response;
+            },
+        });
+
         await server.start();
         server.applyMiddleware({ app });
 
-        app.listen({ port: 4000 }, () => {
-            console.log("Server is listening on 4000");
-        });
+        const subscriptionServer = SubscriptionServer.create(
+            { schema, execute, subscribe },
+            { server: httpServer, path: "/subscriptions" }
+        );
 
         return { app, server };
     } catch (err) {
