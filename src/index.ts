@@ -71,7 +71,7 @@ const startUp = async () => {
 
         const schema: GraphQLSchema = await buildSchema({
             resolvers: [UserResolver, PrayerResolver, EventsSubscription],
-            authChecker: authChecker,
+            authChecker,
         });
 
         const server = new ApolloServer({

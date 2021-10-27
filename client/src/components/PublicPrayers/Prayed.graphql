@@ -1,0 +1,3 @@
+mutation Mutation($id: Float!) {
+    prayed(id: $id)
+}

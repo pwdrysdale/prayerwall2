@@ -1,8 +1,9 @@
 import { useMutation } from "@apollo/client";
-import React, { FormEvent, useCallback, useEffect, useRef } from "react";
+import React, { FormEvent, useCallback, useRef } from "react";
 
 import { loader } from "graphql.macro";
 import { PrayerCategory } from "../../types";
+import { useToasts } from "../../store/useToasts";
 const AddPrayerMutation = loader("./AddPrayer.graphql");
 const MyPrayerQuery = loader("../MyPrayers/MyPrayers.graphql");
 const PublicPrayerQuery = loader("../PublicPrayers/PublicPrayers.graphql");
@@ -14,16 +15,26 @@ const AddPrayer = () => {
     const answeredRef = useRef<HTMLInputElement>(null);
     const categoryRef = useRef<HTMLSelectElement>(null);
 
-    const [addPrayer, { error }] = useMutation(AddPrayerMutation, {
+    const { addToast } = useToasts();
+
+    const [addPrayer] = useMutation(AddPrayerMutation, {
         awaitRefetchQueries: true,
         refetchQueries: [
             { query: MyPrayerQuery },
             { query: PublicPrayerQuery, variables: { cursor: "" } },
         ],
         errorPolicy: "all",
+        onError: (err) => {
+            err.message ===
+            "Access denied! You don't have permission for this action!"
+                ? addToast({
+                      message:
+                          "You need to login or signup to create a prayer!",
+                      type: "error",
+                  })
+                : addToast({ message: err.message, type: "error" });
+        },
     });
-
-    useEffect(() => console.log(error?.message), [error]);
 
     const onSubmit = useCallback(
         (event: FormEvent<HTMLFormElement>) => {

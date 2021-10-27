@@ -6,13 +6,20 @@ import { useMutation, useQuery } from "@apollo/client";
 import moment from "moment";
 import Button from "../HTML/Button";
 import { Link } from "react-router-dom";
+import { useToasts } from "../../store/useToasts";
 const publicPrayers = loader("./PublicPrayers.graphql");
 const deletePrayerMutation = loader("../MyPrayers/deletePrayer.graphql");
+const prayedMutation = loader("./Prayed.graphql");
 
 const PublicPrayers = () => {
+    const { addToast } = useToasts();
+
     const { data, loading, error, refetch } = useQuery(publicPrayers, {
         errorPolicy: "all",
         variables: { cursor: "" },
+        onError: (error) => {
+            addToast({ type: "error", message: error.message });
+        },
     });
 
     const [deletePrayer, { loading: deleteLoading }] = useMutation(
@@ -23,6 +30,11 @@ const PublicPrayers = () => {
         }
     );
 
+    const [prayed, { loading: prayedLoading }] = useMutation(prayedMutation, {
+        awaitRefetchQueries: true,
+        refetchQueries: [{ query: publicPrayers }],
+    });
+
     // const next = () => {
     //     const cursor: string = data.publicPrayers[data.publicPrayers.length - 1].createdDate
 
@@ -32,11 +44,11 @@ const PublicPrayers = () => {
 
     // }
 
-    // React.useEffect(() => {
-    //     console.log(data);
-    // }, [data]);
+    React.useEffect(() => {
+        console.log(data);
+    }, [data]);
 
-    if (loading || deleteLoading) return <div>Loading...</div>;
+    if (loading || deleteLoading || prayedLoading) return <div>Loading...</div>;
     if (error) {
         console.error(error);
         return <div>Sorry, there was an error...</div>;
@@ -81,16 +93,41 @@ const PublicPrayers = () => {
                             {P.answered ? "Answered" : "Not answered yet"}
                         </div>
                         <div>{P.comments.length} Comments</div>
+                        <div>Prayed {P.prayedBy.length} times</div>
+                        <div>Prayed by you {P.prayedByUser} times</div>
                         <div>{moment(P.createdDate).format("LLLL")}</div>
-                        <Link
-                            to={`/prayer/addcomment/${
-                                typeof P.id === "string"
-                                    ? parseFloat(P.id)
-                                    : P.id
-                            }`}
-                        >
-                            <h1>Add a comment</h1>
-                        </Link>
+                        {data.me?.id ? (
+                            <>
+                                <Link
+                                    to={`/prayer/addcomment/${
+                                        typeof P.id === "string"
+                                            ? parseFloat(P.id)
+                                            : P.id
+                                    }`}
+                                >
+                                    <h1>Add a comment</h1>
+                                </Link>
+                                <h1
+                                    onClick={() => {
+                                        prayed({
+                                            variables: {
+                                                id:
+                                                    typeof P.id === "string"
+                                                        ? parseFloat(P.id)
+                                                        : P.id,
+                                            },
+                                        });
+                                    }}
+                                >
+                                    Prayed just now
+                                </h1>
+                            </>
+                        ) : (
+                            <div>
+                                You register that you have prayed for this, and
+                                comment on this by logging in!
+                            </div>
+                        )}
                     </div>
                 ))}
                 <Button

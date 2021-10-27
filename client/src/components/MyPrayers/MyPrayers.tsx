@@ -4,12 +4,25 @@ import { useEffect } from "react";
 import { loader } from "graphql.macro";
 import { Prayer } from "../../types";
 import { Link } from "react-router-dom";
+import { useToasts } from "../../store/useToasts";
 const myPrayers = loader("./MyPrayers.graphql");
 const deletePrayers = loader("./DeletePrayer.graphql");
 
 const MyPrayers = () => {
+    const { addToast } = useToasts();
+
     const { data, loading, error } = useQuery(myPrayers, {
         errorPolicy: "all",
+        onError: (error) => {
+            error.message ===
+            "Access denied! You don't have permission for this action!"
+                ? addToast({
+                      message:
+                          "You are not logged in, so we can't see your prayers!",
+                      type: "error",
+                  })
+                : addToast({ message: error.message, type: "error" });
+        },
     });
 
     const [deletePrayer] = useMutation(deletePrayers, {
@@ -24,8 +37,14 @@ const MyPrayers = () => {
 
     if (loading) return <div>Loading...</div>;
     if (error) {
-        console.error(error);
-        return <div>Sorry, there was an error...</div>;
+        if (
+            error.message ===
+            "Access denied! You don't have permission for this action!"
+        ) {
+            return <div>You need to login to see your prayers!</div>;
+        } else {
+            return <div>Sorry, there was an error...</div>;
+        }
     }
 
     if (data.myPrayers === null) {

@@ -15,7 +15,7 @@ const Toasts = () => {
         <div>
             <h1>Toasts</h1>
             {toasts.map((toast: Toast) => (
-                <div>
+                <div key={toast.id}>
                     <div>{toast.message}</div>
                     <div
                         onClick={() => {

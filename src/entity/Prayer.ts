@@ -11,6 +11,7 @@ import {
     UpdateDateColumn,
 } from "typeorm";
 import { PrayerComments } from "./PrayerComments";
+import { PrayerPrayeredBy } from "./PrayerPrayedBy";
 import { User } from "./User";
 
 export enum PrayerCategory {
@@ -46,6 +47,10 @@ export class Prayer extends BaseEntity {
     @Column({ default: true })
     privat: boolean;
 
+    @Field()
+    @Column({ default: false })
+    featured?: boolean;
+
     @Field(() => User, { nullable: true })
     @ManyToOne(() => User, { nullable: true })
     user: User;
@@ -53,6 +58,13 @@ export class Prayer extends BaseEntity {
     @Field(() => [PrayerComments])
     @OneToMany(() => PrayerComments, (comments) => comments.prayer)
     comments: [PrayerComments];
+
+    @Field(() => [PrayerPrayeredBy], { nullable: true })
+    @OneToMany(() => PrayerPrayeredBy, (prayedBy) => prayedBy.prayer)
+    prayedBy: [PrayerPrayeredBy];
+
+    @Field({ defaultValue: 0 })
+    prayedByUser: number;
 
     @Field()
     @CreateDateColumn({

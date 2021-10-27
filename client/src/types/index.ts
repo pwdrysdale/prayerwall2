@@ -1,3 +1,4 @@
 export * from "./prayerTypes";
 export * from "./prayerCommentTypes";
 export * from "./userTypes";
+export * from "./prayedByTypes";

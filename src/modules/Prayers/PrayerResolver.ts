@@ -1,31 +1,40 @@
-import { Arg, Ctx, Mutation, Query, Resolver, PubSub } from "type-graphql";
+import {
+    Arg,
+    Ctx,
+    Mutation,
+    Query,
+    Resolver,
+    PubSub,
+    Authorized,
+} from "type-graphql";
 import { FindManyOptions, LessThan } from "typeorm";
 import { Prayer } from "../../entity/Prayer";
 import { User, UserRole } from "../../entity/User";
 import { AppContext } from "../../utlis/context";
 import { PrayerInput } from "./inputs/PrayerInput";
 
-import { v4 as uuid } from "uuid";
-
 import { format } from "date-fns";
 import { EditPrayerInput } from "./inputs/EditPrayerInput";
 import { PrayerComments } from "../../entity/PrayerComments";
 import { PrayerCommentInput } from "./inputs/PrayerCommentInput";
 import { PubSubEngine } from "graphql-subscriptions";
-import { EventsSubscription } from "../EventsSub/EventsSubscription";
+import { PrayerPrayeredBy } from "../../entity/PrayerPrayedBy";
 
 @Resolver()
 export class PrayerResolver {
+    // Get all the public prayers
+    // Authh: all users
     @Query((): typeof Prayer[] => [Prayer], { nullable: true })
     async publicPrayers(
-        @Arg("cursor", { nullable: true }) cursor: string
+        @Arg("cursor", { nullable: true }) cursor: string,
+        @Ctx() { req }: AppContext
     ): Promise<Prayer[] | null> {
         try {
             const options: FindManyOptions<Prayer> = {
                 take: 2,
                 order: { createdDate: "DESC" },
                 where: { privat: false },
-                relations: ["user", "comments"],
+                relations: ["user", "comments", "prayedBy", "prayedBy.user"],
             };
 
             if (cursor) {
@@ -39,7 +48,20 @@ export class PrayerResolver {
 
             const p: Prayer[] = await Prayer.find(options);
             if (p) {
-                return p;
+                if (req.user && req.user.id) {
+                    const status = p.map(
+                        (p: Prayer): Prayer =>
+                            Object.assign(p, {
+                                prayedByUser: p.prayedBy
+                                    .map((prayed) => prayed.user.id)
+                                    .filter((id: number) => id === req.user.id)
+                                    .length,
+                            })
+                    );
+                    return status;
+                } else {
+                    return p;
+                }
             } else return null;
         } catch (error) {
             console.log(error);
@@ -47,6 +69,9 @@ export class PrayerResolver {
         }
     }
 
+    // Get all the prayers of the current logged in user
+    // Auth: any logged in user
+    @Authorized([UserRole.admin, UserRole.loggedIn])
     @Query((): typeof Prayer[] => [Prayer], { nullable: true })
     async myPrayers(@Ctx() { req }: AppContext): Promise<Prayer[] | null> {
         try {
@@ -65,6 +90,8 @@ export class PrayerResolver {
         }
     }
 
+    // Get one prayer (for editing or comments)
+    // Auth: any user => prayer must be public or user the owner of the prayer
     @Query(() => Prayer, { nullable: true })
     async onePrayer(
         @Ctx() { req }: AppContext,
@@ -83,6 +110,9 @@ export class PrayerResolver {
         }
     }
 
+    // Add a prayer
+    // Auth: must be logged in as some kind of user
+    @Authorized([UserRole.admin, UserRole.loggedIn])
     @Mutation(() => Prayer)
     async addPrayer(
         @Arg("PrayerInput")
@@ -118,6 +148,9 @@ export class PrayerResolver {
         }
     }
 
+    // Edit a prayer
+    // Auth: Must be the owner of the prayer
+    @Authorized([UserRole.admin, UserRole.loggedIn])
     @Mutation(() => Prayer, { nullable: true })
     async editPrayer(
         @Arg("EditPrayerInput")
@@ -158,6 +191,9 @@ export class PrayerResolver {
         }
     }
 
+    // Delete a prayer
+    // Auth: Must be the owner of the prayer or admin
+    @Authorized([UserRole.admin, UserRole.loggedIn])
     @Mutation(() => Boolean)
     async deletePrayer(
         @Arg("id")
@@ -186,6 +222,8 @@ export class PrayerResolver {
         }
     }
 
+    // Add a comment to a prayer
+    // Auth: Must be logged in as some kind of user
     @Mutation(() => PrayerComments)
     async addComment(
         @Ctx() { req }: AppContext,
@@ -211,6 +249,8 @@ export class PrayerResolver {
         }
     }
 
+    // Delete a comment
+    // Auth: Must be the owner of the comment or admin
     @Mutation(() => Boolean)
     async deleteComment(
         @Ctx() { req }: AppContext,
@@ -225,13 +265,40 @@ export class PrayerResolver {
                 relations: ["user"],
             });
 
-            if (comment.user.id === req.user.id) {
+            if (
+                comment.user.id === req.user.id ||
+                req.user.role === UserRole.admin
+            ) {
                 await PrayerComments.delete(id);
                 return true;
             } else {
                 return false;
             }
         } catch {
+            return false;
+        }
+    }
+
+    @Mutation(() => Boolean)
+    async prayed(
+        @Ctx() { req }: AppContext,
+        @Arg("id") id: number
+    ): Promise<boolean> {
+        try {
+            if (!req.user) {
+                return false;
+            }
+
+            const prayer: Prayer = await Prayer.findOne(id);
+            const user: User = await User.findOne(req.user.id);
+
+            await PrayerPrayeredBy.create({
+                prayer,
+                user,
+            }).save();
+
+            return true;
+        } catch (err) {
             return false;
         }
     }

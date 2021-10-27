@@ -6,6 +6,14 @@ query Query($cursor: String) {
         category
         answered
         privat
+        prayedByUser
+        prayedBy {
+            id
+            user {
+                id
+                username
+            }
+        }
         user {
             username
             id

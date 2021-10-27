@@ -6,10 +6,14 @@ import {
     Column,
     BaseEntity,
     OneToMany,
+    CreateDateColumn,
+    UpdateDateColumn,
 } from "typeorm";
 import { Lazy } from "../utlis/lazyType";
+import { Following } from "./Following";
 import { Prayer } from "./Prayer";
 import { PrayerComments } from "./PrayerComments";
+import { PrayerPrayeredBy } from "./PrayerPrayedBy";
 
 export enum UserRole {
     loggedIn = "loggedIn",
@@ -35,6 +39,14 @@ export class User extends BaseEntity {
     @Column({ nullable: true })
     githubId: string;
 
+    @OneToMany(() => Following, (following) => following.userId)
+    @Field(() => [Following])
+    createdFollows: [Following];
+
+    @OneToMany(() => Following, (following) => following.followingId)
+    @Field(() => [Following])
+    followingMe: [Following];
+
     // @OneToMany(() => Prayer, (entry) => Prayer.user, {
     @OneToMany(() => Prayer, (prayer) => prayer.user, {
         lazy: true,
@@ -50,6 +62,12 @@ export class User extends BaseEntity {
     @Field(() => [PrayerComments])
     comments: Lazy<PrayerComments[]>;
 
+    @OneToMany(() => PrayerPrayeredBy, (prayedBy) => prayedBy.user, {
+        nullable: true,
+    })
+    @Field(() => [PrayerPrayeredBy])
+    prayedBy: [PrayerPrayeredBy] | null;
+
     @Field()
     @Column()
     username: string;
@@ -57,4 +75,18 @@ export class User extends BaseEntity {
     @Field()
     @Column({ default: UserRole.loggedIn, enum: UserRole })
     role: string;
+
+    @Field()
+    @CreateDateColumn({
+        type: "timestamp",
+        name: "createdDate",
+    })
+    createdDate!: Date;
+
+    @Field()
+    @UpdateDateColumn({
+        type: "timestamp",
+        name: "updateDate",
+    })
+    updateDate!: Date;
 }

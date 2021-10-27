@@ -9,7 +9,9 @@ export class UserResolver {
         return req.user;
     }
 
-    // @Authorized(UserRole.admin)
+    // Get a list of all users
+    // Auth: admin only
+    @Authorized(UserRole.admin)
     @Query((): typeof User[] => [User])
     async allUsers(): Promise<User[] | null> {
         return await User.find();
