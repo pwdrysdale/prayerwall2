@@ -17,6 +17,12 @@ const Navbar = () => {
                 <Link to="/prayer/public">
                     <li>Public Prayers</li>
                 </Link>
+                <Link to="/user/following">
+                    <li>Following</li>
+                </Link>
+                <Link to="/prayer/following">
+                    <li>Following Prayers</li>
+                </Link>
             </ul>
         </div>
     );

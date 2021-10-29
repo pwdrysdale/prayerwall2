@@ -1,7 +1,7 @@
 import React from "react";
 
 import { loader } from "graphql.macro";
-import { Following, Prayer } from "../../types";
+import { Following, Prayer, PrayerCategory } from "../../types";
 import { useMutation, useQuery } from "@apollo/client";
 import moment from "moment";
 import Button from "../HTML/Button";
@@ -76,7 +76,7 @@ const PublicPrayers = () => {
                     <div key={idx}>
                         <div>{P.user?.username}</div>
                         {data.me && P.user?.id === data.me?.id && (
-                            <h2
+                            <Button
                                 onClick={() => {
                                     deletePrayer({
                                         variables: {
@@ -89,12 +89,12 @@ const PublicPrayers = () => {
                                 }}
                             >
                                 Delete Prayer
-                            </h2>
+                            </Button>
                         )}
                         <h3>{P.title}</h3>
                         <div>{P.body}</div>
                         <div>{P.privat ? "Private" : "Public"}</div>
-                        <div>{P.category}</div>
+                        <div>{PrayerCategory[P.category]}</div>
                         <div>
                             {P.answered ? "Answered" : "Not answered yet"}
                         </div>

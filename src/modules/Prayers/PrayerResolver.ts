@@ -6,8 +6,9 @@ import {
     Resolver,
     PubSub,
     Authorized,
+    ConflictingDefaultWithNullableError,
 } from "type-graphql";
-import { FindManyOptions, LessThan } from "typeorm";
+import { FindManyOptions, In, LessThan } from "typeorm";
 import { Prayer } from "../../entity/Prayer";
 import { User, UserRole } from "../../entity/User";
 import { AppContext } from "../../utlis/context";
@@ -20,6 +21,7 @@ import { PrayerCommentInput } from "./inputs/PrayerCommentInput";
 import { PubSubEngine } from "graphql-subscriptions";
 import { PrayerPrayeredBy } from "../../entity/PrayerPrayedBy";
 import { PrayerCategory } from "../../../client/src/types";
+import { Following } from "../../entity/Following";
 
 @Resolver()
 export class PrayerResolver {
@@ -105,6 +107,36 @@ export class PrayerResolver {
             if (p && (p.privat === false || p.user.id === req.user.id)) {
                 return p;
             } else return null;
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
+    }
+
+    @Query(() => [Prayer])
+    async getFollowingPrayers(
+        @Ctx() { req }: AppContext
+    ): Promise<Prayer[] | null> {
+        try {
+            if (!req.user) {
+                console.log("No user");
+                return null;
+            }
+
+            const me = await User.findOne(req.user.id, {
+                relations: ["createdFollows", "createdFollows.followingId"],
+            });
+            const ids: number[] = me.createdFollows.map(
+                (f: Following) => f.followingId.id
+            );
+            const prayers = await Prayer.find({
+                where: {
+                    user: { id: In(ids) },
+                    privat: false,
+                },
+            });
+            console.log(prayers);
+            return prayers;
         } catch (error) {
             console.log(error);
             return null;

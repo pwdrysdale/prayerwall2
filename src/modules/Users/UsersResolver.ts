@@ -24,6 +24,20 @@ export class UserResolver {
         return await User.find();
     }
 
+    @Authorized([UserRole.admin, UserRole.loggedIn])
+    @Query((): typeof User[] => [User])
+    async getMyFollowers(@Ctx() { req }: AppContext): Promise<User[] | null> {
+        try {
+            const people = await Following.find({
+                where: { userId: { id: req.user.id } },
+                relations: ["followingId"],
+            });
+            return people.map((f) => f.followingId);
+        } catch {
+            return null;
+        }
+    }
+
     @Mutation(() => Boolean)
     async follow(
         @Ctx() { req }: AppContext,
@@ -45,6 +59,34 @@ export class UserResolver {
                 userId: user,
                 followingId: toFollow,
             }).save();
+
+            return true;
+        } catch (err) {
+            return false;
+        }
+    }
+
+    @Mutation(() => Boolean)
+    async unfollow(
+        @Ctx() { req }: AppContext,
+        @Arg("id") id: number
+    ): Promise<boolean> {
+        try {
+            if (!req.user) {
+                return false;
+            }
+
+            const toUnfollow = await User.findOne(id);
+            if (!toUnfollow) {
+                return false;
+            }
+
+            const user: User = await User.findOne(req.user.id);
+
+            await Following.delete({
+                userId: user,
+                followingId: toUnfollow,
+            });
 
             return true;
         } catch (err) {

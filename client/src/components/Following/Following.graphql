@@ -1,0 +1,6 @@
+query {
+    getMyFollowers {
+        id
+        username
+    }
+}
