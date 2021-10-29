@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@apollo/client";
 import { useEffect } from "react";
 
 import { loader } from "graphql.macro";
-import { Prayer } from "../../types";
+import { Prayer, PrayerCategory } from "../../types";
 import { Link } from "react-router-dom";
 import { useToasts } from "../../store/useToasts";
 const myPrayers = loader("./MyPrayers.graphql");
@@ -81,7 +81,7 @@ const MyPrayers = () => {
                         <div>{P.title}</div>
                         <div>{P.body}</div>
                         <div>{P.privat ? "Private" : "Public"}</div>
-                        <div>{P.category}</div>
+                        <div>{PrayerCategory[P.category]}</div>
                         <div>
                             {P.answered ? "Answered" : "Not answered yet"}
                         </div>

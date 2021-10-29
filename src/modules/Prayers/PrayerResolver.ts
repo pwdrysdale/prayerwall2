@@ -19,6 +19,7 @@ import { PrayerComments } from "../../entity/PrayerComments";
 import { PrayerCommentInput } from "./inputs/PrayerCommentInput";
 import { PubSubEngine } from "graphql-subscriptions";
 import { PrayerPrayeredBy } from "../../entity/PrayerPrayedBy";
+import { PrayerCategory } from "../../../client/src/types";
 
 @Resolver()
 export class PrayerResolver {

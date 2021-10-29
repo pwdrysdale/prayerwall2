@@ -26,7 +26,9 @@ const EditPrayer: React.FC<Component> = ({ match }) => {
     const [body, setBody] = useState("");
     const [privat, setPrivat] = useState<boolean>(true);
     const [answered, setAnswered] = useState<boolean>(false);
-    const [category, setCategory] = useState<keyof PrayerCategory>();
+    const [category, setCategory] = useState<PrayerCategory>(
+        PrayerCategory.thanks
+    );
 
     const { id } = match.params;
 
@@ -49,9 +51,9 @@ const EditPrayer: React.FC<Component> = ({ match }) => {
             const { title, body, privat, answered, category } = data.onePrayer;
             setTitle(title);
             setBody(body);
-            setPrivat(privat || true);
+            setPrivat(privat);
             setAnswered(answered || false);
-            setCategory(category || Object.keys(PrayerCategory)[0]);
+            setCategory(PrayerCategory[category] as unknown as PrayerCategory);
         }
     }, [data]);
 
@@ -64,7 +66,10 @@ const EditPrayer: React.FC<Component> = ({ match }) => {
                 body,
                 privat,
                 answered,
-                category,
+                category:
+                    typeof category === "string"
+                        ? parseFloat(category)
+                        : category,
             };
 
             editPrayer({
@@ -133,13 +138,24 @@ const EditPrayer: React.FC<Component> = ({ match }) => {
                     <select
                         name="category"
                         id="category"
-                        onChange={(e) => setCategory(e.target.selectedIndex)}
+                        value={category}
+                        onChange={(e) =>
+                            setCategory(
+                                e.target.value as unknown as PrayerCategory
+                            )
+                        }
                     >
-                        {Object.keys(PrayerCategory).map((o: string) => (
-                            <option key={o} value={o}>
-                                {o}
-                            </option>
-                        ))}
+                        {Object.values(PrayerCategory)
+                            .filter(
+                                (o: string | number) => typeof o === "number"
+                            )
+                            .map((o: any) => {
+                                return (
+                                    <option key={o} value={o}>
+                                        {PrayerCategory[o]}
+                                    </option>
+                                );
+                            })}
                     </select>
                 </div>
                 <input type="submit" value="Submit" />

@@ -1,9 +1,9 @@
 import { PrayedBy, PrayerComments, User } from ".";
 
 export enum PrayerCategory {
-    "thanks" = "Thanks",
-    "sorry" = "Sorry",
-    "please" = "Please",
+    "thanks",
+    "sorry",
+    "please",
 }
 
 export interface Prayer {

@@ -20,11 +20,11 @@ export class Following extends BaseEntity {
 
     @Field(() => User)
     @ManyToOne(() => User, (user) => user.createdFollows)
-    userId: string;
+    userId: User;
 
     @Field(() => User)
     @ManyToOne(() => User, (user) => user.followingMe)
-    followingId: string;
+    followingId: User;
 
     @Field()
     @CreateDateColumn({

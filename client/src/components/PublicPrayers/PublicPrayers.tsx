@@ -1,7 +1,7 @@
 import React from "react";
 
 import { loader } from "graphql.macro";
-import { Prayer } from "../../types";
+import { Following, Prayer } from "../../types";
 import { useMutation, useQuery } from "@apollo/client";
 import moment from "moment";
 import Button from "../HTML/Button";
@@ -10,6 +10,7 @@ import { useToasts } from "../../store/useToasts";
 const publicPrayers = loader("./PublicPrayers.graphql");
 const deletePrayerMutation = loader("../MyPrayers/deletePrayer.graphql");
 const prayedMutation = loader("./Prayed.graphql");
+const followMutation = loader("./Follow.graphql");
 
 const PublicPrayers = () => {
     const { addToast } = useToasts();
@@ -31,6 +32,11 @@ const PublicPrayers = () => {
     );
 
     const [prayed, { loading: prayedLoading }] = useMutation(prayedMutation, {
+        awaitRefetchQueries: true,
+        refetchQueries: [{ query: publicPrayers }],
+    });
+
+    const [follow] = useMutation(followMutation, {
         awaitRefetchQueries: true,
         refetchQueries: [{ query: publicPrayers }],
     });
@@ -94,10 +100,45 @@ const PublicPrayers = () => {
                         </div>
                         <div>{P.comments.length} Comments</div>
                         <div>Prayed {P.prayedBy.length} times</div>
-                        <div>Prayed by you {P.prayedByUser} times</div>
                         <div>{moment(P.createdDate).format("LLLL")}</div>
                         {data.me?.id ? (
                             <>
+                                <div>Prayed by you {P.prayedByUser} times</div>
+
+                                {data.me.id !== P.user.id &&
+                                !data.me.createdFollows
+                                    .map((f: Following) => f.followingId.id)
+                                    .includes(P.user.id) ? (
+                                    <Button
+                                        onClick={async () => {
+                                            const value = await follow({
+                                                variables: {
+                                                    id:
+                                                        typeof P.user.id ===
+                                                        "string"
+                                                            ? parseFloat(
+                                                                  P.user.id
+                                                              )
+                                                            : P.user.id,
+                                                },
+                                            });
+                                            if (value) {
+                                                addToast({
+                                                    type: "success",
+                                                    message: "Followed!",
+                                                });
+                                            }
+                                        }}
+                                    >
+                                        Follow
+                                    </Button>
+                                ) : (
+                                    data.me.id !== P.user.id && (
+                                        <div>
+                                            You already follow this person!
+                                        </div>
+                                    )
+                                )}
                                 <Link
                                     to={`/prayer/addcomment/${
                                         typeof P.id === "string"
@@ -105,9 +146,9 @@ const PublicPrayers = () => {
                                             : P.id
                                     }`}
                                 >
-                                    <h1>Add a comment</h1>
+                                    <Button>Add a comment</Button>
                                 </Link>
-                                <h1
+                                <Button
                                     onClick={() => {
                                         prayed({
                                             variables: {
@@ -120,7 +161,7 @@ const PublicPrayers = () => {
                                     }}
                                 >
                                     Prayed just now
-                                </h1>
+                                </Button>
                             </>
                         ) : (
                             <div>

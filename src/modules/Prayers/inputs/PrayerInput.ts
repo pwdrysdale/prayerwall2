@@ -22,9 +22,8 @@ export class PrayerInput {
     @Field()
     answered: boolean;
 
-    @Field((type) => PrayerCategory)
-    @IsString()
-    category: PrayerCategory;
+    @Field()
+    category: number;
 
     // @Field()
     // status: string;

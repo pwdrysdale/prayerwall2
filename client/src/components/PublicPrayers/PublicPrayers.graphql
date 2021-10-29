@@ -26,5 +26,10 @@ query Query($cursor: String) {
     me {
         id
         username
+        createdFollows {
+            followingId {
+                id
+            }
+        }
     }
 }

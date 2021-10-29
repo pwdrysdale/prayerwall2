@@ -53,8 +53,7 @@ const AddPrayer = () => {
                             body: bodyRef.current.value,
                             privat: privateRef.current.checked,
                             answered: answeredRef.current.checked,
-                            category: categoryRef.current
-                                .value as PrayerCategory,
+                            category: parseFloat(categoryRef.current.value),
                         },
                     },
                 });
@@ -95,9 +94,17 @@ const AddPrayer = () => {
                 </div>
                 <div className="form-group">
                     <select name="category" id="category" ref={categoryRef}>
-                        {Object.keys(PrayerCategory).map((o: string) => (
-                            <option key={o}>{o}</option>
-                        ))}
+                        {Object.values(PrayerCategory)
+                            .filter(
+                                (o: string | number) => typeof o === "number"
+                            )
+                            .map((o: any) => {
+                                return (
+                                    <option key={o} value={o}>
+                                        {PrayerCategory[o]}
+                                    </option>
+                                );
+                            })}
                     </select>
                 </div>
                 <input type="submit" value="Submit" />

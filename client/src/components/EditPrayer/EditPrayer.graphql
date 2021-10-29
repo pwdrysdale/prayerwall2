@@ -5,6 +5,5 @@ mutation Mutation($editPrayerInput: EditPrayerInput!) {
         privat
         category
         answered
-        createdDate
     }
 }

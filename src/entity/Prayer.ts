@@ -15,9 +15,9 @@ import { PrayerPrayeredBy } from "./PrayerPrayedBy";
 import { User } from "./User";
 
 export enum PrayerCategory {
-    "thanks" = "Thanks",
-    "sorry" = "Sorry",
-    "please" = "Please",
+    "thanks",
+    "sorry",
+    "please",
 }
 
 @ObjectType()
