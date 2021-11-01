@@ -15,6 +15,7 @@ import { createServer } from "http";
 import { execute, subscribe } from "graphql";
 import { SubscriptionServer } from "subscriptions-transport-ws";
 
+import stripeRoutes from "./utlis/stripe/stripe";
 import passportRoutes from "./utlis/passportRoutes";
 import { PrayerResolver } from "./modules/Prayers/PrayerResolver";
 import { EventsSubscription } from "./modules/EventsSub/EventsSubscription";
@@ -49,12 +50,14 @@ const startUp = async () => {
             "http://localhost:3000",
 
             "http://localhost:4000/graphql",
-            // "http://localhost:4000",
+            "http://localhost:4000",
+            // "http://localhost:4000/stripe",
         ];
 
         const corsOptions: CorsOptions = {
             credentials: true,
             origin: (origin, callback) => {
+                console.log("Checking cors here");
                 if (allowedOrigins.includes(origin))
                     return callback(null, true);
 
@@ -62,7 +65,18 @@ const startUp = async () => {
             },
         };
 
+        // app.use("*", (req, res, next) => {
+        //     res.header("Access-Control-Allow-Origin", "http://localhost:4000");
+        //     res.header(
+        //         "Access-Control-Allow-Headers",
+        //         "Origin, X-Requested-With, Content-Type, Accept"
+        //     );
+        //     next();
+        // });
+
         app.use(cors(corsOptions));
+        // app.use(cors());
+        app.use("/stripe", stripeRoutes);
 
         const httpServer = createServer(app);
         httpServer.listen({ port: 4000 }, () => {

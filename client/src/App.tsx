@@ -11,6 +11,7 @@ import Navbar from "./components/Navbar/Navbar";
 import PublicPrayers from "./components/PublicPrayers/PublicPrayers";
 import Toasts from "./components/Toasts/Toasts";
 import AuthScreen from "./screens/AuthScreen/AuthScreen";
+import GiveScreen from "./screens/GiveScreen/GiveScreen";
 
 function App() {
     return (
@@ -36,6 +37,7 @@ function App() {
                     exact
                 />
                 <Route path="/user/following" component={Following} exact />
+                <Route path="/give" component={GiveScreen} exact />
             </Switch>
             <Events />
             <Toasts />

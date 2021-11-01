@@ -23,6 +23,9 @@ const Navbar = () => {
                 <Link to="/prayer/following">
                     <li>Following Prayers</li>
                 </Link>
+                <Link to="/give">
+                    <li>Give</li>
+                </Link>
             </ul>
         </div>
     );
