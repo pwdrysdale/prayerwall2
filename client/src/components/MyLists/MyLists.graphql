@@ -1,0 +1,13 @@
+query GET_LISTS {
+    myLists {
+        id
+        name
+        description
+        privat
+        createdDate
+        prayers {
+            id
+            title
+        }
+    }
+}

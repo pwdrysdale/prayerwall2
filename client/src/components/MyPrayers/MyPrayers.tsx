@@ -5,8 +5,11 @@ import { loader } from "graphql.macro";
 import { Prayer, PrayerCategory } from "../../types";
 import { Link } from "react-router-dom";
 import { useToasts } from "../../store/useToasts";
+import Button from "../HTML/Button";
+
 const myPrayers = loader("./MyPrayers.graphql");
 const deletePrayers = loader("./DeletePrayer.graphql");
+const setAsPrayed = loader("../PublicPrayers/Prayed.graphql");
 
 const MyPrayers = () => {
     const { addToast } = useToasts();
@@ -23,6 +26,17 @@ const MyPrayers = () => {
                   })
                 : addToast({ message: error.message, type: "error" });
         },
+    });
+
+    const [prayedThis] = useMutation(setAsPrayed, {
+        onError: (error) => {
+            addToast({
+                message: "Sorry, we could not make that update :(",
+                type: "error",
+            });
+        },
+        refetchQueries: [{ query: myPrayers }],
+        awaitRefetchQueries: true,
     });
 
     const [deletePrayer] = useMutation(deletePrayers, {
@@ -61,7 +75,19 @@ const MyPrayers = () => {
             <div>
                 {data.myPrayers.map((P: Prayer, idx: number) => (
                     <div key={idx}>
-                        <h2
+                        <h1>{P.title}</h1>
+                        <div>{P.body}</div>
+                        <div>{P.privat ? "Private" : "Public"}</div>
+                        <div>{PrayerCategory[P.category]}</div>
+                        <div>
+                            {P.answered ? "Answered" : "Not answered yet"}
+                        </div>
+                        <div>
+                            {P.prayedBy && P.prayedBy.length > 0
+                                ? P.prayedBy.length
+                                : "No one prayed yet"}
+                        </div>
+                        <Button
                             onClick={() => {
                                 deletePrayer({
                                     variables: {
@@ -74,17 +100,21 @@ const MyPrayers = () => {
                             }}
                         >
                             Delete
-                        </h2>
+                        </Button>
                         <Link to={`/prayer/edit/${P.id}`}>
-                            <h2>Edit</h2>
+                            <Button>Edit</Button>
                         </Link>
-                        <div>{P.title}</div>
-                        <div>{P.body}</div>
-                        <div>{P.privat ? "Private" : "Public"}</div>
-                        <div>{PrayerCategory[P.category]}</div>
-                        <div>
-                            {P.answered ? "Answered" : "Not answered yet"}
-                        </div>
+                        <Button
+                            onClick={() => {
+                                prayedThis({
+                                    variables: {
+                                        id: P.id,
+                                    },
+                                });
+                            }}
+                        >
+                            I Prayed This Prayer
+                        </Button>
                     </div>
                 ))}
             </div>

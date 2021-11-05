@@ -6,5 +6,9 @@ query Query {
         category
         answered
         privat
+        prayedByUser
+        prayedBy {
+            id
+        }
     }
 }

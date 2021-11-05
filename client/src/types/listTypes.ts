@@ -1,0 +1,12 @@
+import { Prayer, User } from ".";
+
+export interface List {
+    id: number;
+    name: string;
+    description: string;
+    privat: boolean;
+    createdDate: Date;
+    updateDate: Date;
+    owner: User;
+    prayers: [Prayer];
+}

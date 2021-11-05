@@ -7,7 +7,7 @@ export enum PrayerCategory {
 }
 
 export interface Prayer {
-    id: number | string;
+    id: number;
     title: string;
     body: string;
     privat: boolean;
@@ -15,7 +15,7 @@ export interface Prayer {
     category: PrayerCategory;
     user: User;
     comments: [PrayerComments];
-    prayedBy: [PrayedBy];
+    prayedBy?: [PrayedBy];
     prayedByUser: number;
     createdDate: Date;
 }

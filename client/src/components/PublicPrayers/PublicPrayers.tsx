@@ -75,22 +75,6 @@ const PublicPrayers = () => {
                 {data.publicPrayers.map((P: Prayer, idx: number) => (
                     <div key={idx}>
                         <div>{P.user?.username}</div>
-                        {data.me && P.user?.id === data.me?.id && (
-                            <Button
-                                onClick={() => {
-                                    deletePrayer({
-                                        variables: {
-                                            id:
-                                                typeof P.id === "string"
-                                                    ? parseFloat(P.id)
-                                                    : P.id,
-                                        },
-                                    });
-                                }}
-                            >
-                                Delete Prayer
-                            </Button>
-                        )}
                         <h3>{P.title}</h3>
                         <div>{P.body}</div>
                         <div>{P.privat ? "Private" : "Public"}</div>
@@ -99,7 +83,7 @@ const PublicPrayers = () => {
                             {P.answered ? "Answered" : "Not answered yet"}
                         </div>
                         <div>{P.comments.length} Comments</div>
-                        <div>Prayed {P.prayedBy.length} times</div>
+                        <div>Prayed {P.prayedBy?.length} times</div>
                         <div>{moment(P.createdDate).format("LLLL")}</div>
                         {data.me?.id ? (
                             <>
@@ -162,6 +146,30 @@ const PublicPrayers = () => {
                                 >
                                     Prayed just now
                                 </Button>
+                                {data.me && P.user?.id === data.me?.id && (
+                                    <>
+                                        <Button
+                                            onClick={() => {
+                                                deletePrayer({
+                                                    variables: {
+                                                        id:
+                                                            typeof P.id ===
+                                                            "string"
+                                                                ? parseFloat(
+                                                                      P.id
+                                                                  )
+                                                                : P.id,
+                                                    },
+                                                });
+                                            }}
+                                        >
+                                            Delete Prayer
+                                        </Button>
+                                        <Link to={`/prayer/edit/${P.id}`}>
+                                            <Button>Edit</Button>
+                                        </Link>
+                                    </>
+                                )}
                             </>
                         ) : (
                             <div>

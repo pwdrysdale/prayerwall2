@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useCallback, useState } from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import axios from "axios";
 import StripeCheckout from "react-stripe-checkout";
 

@@ -1,14 +1,11 @@
-import { eachDayOfIntervalWithOptions } from "date-fns/fp";
-import Router, { request, Request } from "express";
+import Router, { Request } from "express";
 import { v4 as uuid } from "uuid";
 import dotenv from "dotenv";
-import { userInfo } from "os";
-
-const stripe = require("stripe")(process.env.TEST_STRIPE_SECRET_KEY);
 
 const router = Router();
 
 dotenv.config();
+const stripe = require("stripe")(process.env.TEST_STRIPE_SECRET_KEY);
 
 router.get("/", (req, res) => {
     console.log("In a stripe route");
@@ -38,7 +35,7 @@ router.post("/pay", (req: ReqExtend, res) => {
         .create({
             email,
             // we want source to be a customer id
-            source: uuid(),
+            source: token.id,
         })
         .then(
             (customer) => {
@@ -62,7 +59,10 @@ router.post("/pay", (req: ReqExtend, res) => {
             { itemPotencyKey }
         )
         .then((result) => res.status(200).json(result))
-        .catch((err) => res.status(500).json(err));
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json(err);
+        });
 });
 
 export default router;

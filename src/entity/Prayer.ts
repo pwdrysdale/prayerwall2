@@ -5,11 +5,14 @@ import {
     Column,
     CreateDateColumn,
     Entity,
+    JoinTable,
+    ManyToMany,
     ManyToOne,
     OneToMany,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from "typeorm";
+import { List } from "./List";
 import { PrayerComments } from "./PrayerComments";
 import { PrayerPrayeredBy } from "./PrayerPrayedBy";
 import { User } from "./User";
@@ -62,6 +65,15 @@ export class Prayer extends BaseEntity {
     @Field(() => [PrayerPrayeredBy], { nullable: true })
     @OneToMany(() => PrayerPrayeredBy, (prayedBy) => prayedBy.prayer)
     prayedBy: [PrayerPrayeredBy];
+
+    @Field(() => [List], { nullable: true })
+    @ManyToMany(() => List, (list) => list.prayers, { nullable: true })
+    @JoinTable({
+        name: "prayer_list",
+        joinColumn: { name: "prayer_id", referencedColumnName: "id" },
+        inverseJoinColumn: { name: "list_id", referencedColumnName: "id" },
+    })
+    lists?: List[];
 
     @Field({ defaultValue: 0 })
     prayedByUser: number;

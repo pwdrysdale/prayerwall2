@@ -23,6 +23,12 @@ const Navbar = () => {
                 <Link to="/prayer/following">
                     <li>Following Prayers</li>
                 </Link>
+                <Link to="/lists/my">
+                    <li>My Lists</li>
+                </Link>
+                <Link to="/lists/add">
+                    <li>Add A List</li>
+                </Link>
                 <Link to="/give">
                     <li>Give</li>
                 </Link>

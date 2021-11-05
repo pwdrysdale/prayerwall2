@@ -82,7 +82,10 @@ export class PrayerResolver {
                 return null;
             }
 
-            const p: Prayer[] = await req.user.prayers;
+            const p: Prayer[] = await Prayer.find({
+                where: { user: { id: req.user.id } },
+                relations: ["prayedBy"],
+            });
 
             if (p) {
                 return p;

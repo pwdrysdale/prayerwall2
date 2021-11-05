@@ -19,6 +19,7 @@ import stripeRoutes from "./utlis/stripe/stripe";
 import passportRoutes from "./utlis/passportRoutes";
 import { PrayerResolver } from "./modules/Prayers/PrayerResolver";
 import { EventsSubscription } from "./modules/EventsSub/EventsSubscription";
+import { ListResolver } from "./modules/List/ListResolver";
 
 const startUp = async () => {
     try {
@@ -84,7 +85,12 @@ const startUp = async () => {
         });
 
         const schema: GraphQLSchema = await buildSchema({
-            resolvers: [UserResolver, PrayerResolver, EventsSubscription],
+            resolvers: [
+                UserResolver,
+                PrayerResolver,
+                ListResolver,
+                EventsSubscription,
+            ],
             authChecker,
         });
 

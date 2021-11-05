@@ -1,0 +1,9 @@
+mutation Mutation($listInput: ListInput!) {
+    createList(ListInput: $listInput) {
+        name
+        description
+        owner {
+            username
+        }
+    }
+}
