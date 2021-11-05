@@ -1,9 +1,10 @@
-import { useMutation } from "@apollo/client";
-import React, { FormEvent, useCallback, useRef } from "react";
+import { useMutation, useQuery } from "@apollo/client";
+import React, { FormEvent, useCallback, useRef, useState } from "react";
 
 import { loader } from "graphql.macro";
 import { PrayerCategory } from "../../types";
 import { useToasts } from "../../store/useToasts";
+const GET_LISTS = loader("./GetLists.graphql");
 const AddPrayerMutation = loader("./AddPrayer.graphql");
 const MyPrayerQuery = loader("../MyPrayers/MyPrayers.graphql");
 const PublicPrayerQuery = loader("../PublicPrayers/PublicPrayers.graphql");
@@ -14,8 +15,15 @@ const AddPrayer = () => {
     const privateRef = useRef<HTMLInputElement>(null);
     const answeredRef = useRef<HTMLInputElement>(null);
     const categoryRef = useRef<HTMLSelectElement>(null);
+    const [selectedLists, setSelectedLists] = useState<number[]>([]);
 
     const { addToast } = useToasts();
+
+    const {
+        data: lists,
+        loading: listLoading,
+        error: listError,
+    } = useQuery(GET_LISTS);
 
     const [addPrayer] = useMutation(AddPrayerMutation, {
         awaitRefetchQueries: true,
@@ -62,6 +70,10 @@ const AddPrayer = () => {
         [addPrayer]
     );
 
+    if (listLoading) return <div>Loading...</div>;
+    if (listError)
+        return <div>There was an error getting your lists, sorry</div>;
+
     return (
         <div>
             <h1>Add a prayer here</h1>
@@ -107,6 +119,47 @@ const AddPrayer = () => {
                             })}
                     </select>
                 </div>
+                {lists.myLists?.length > 0 ? (
+                    <div>
+                        <h3>Select the lists you want to add this prayer to</h3>
+                        {lists.myLists.map((list: any) => {
+                            return (
+                                <div>
+                                    <input
+                                        type="checkbox"
+                                        id={list.id}
+                                        checked={selectedLists.includes(
+                                            list.id
+                                        )}
+                                        onChange={() => {
+                                            if (
+                                                selectedLists.includes(list.id)
+                                            ) {
+                                                setSelectedLists(
+                                                    selectedLists.filter(
+                                                        (id: number) =>
+                                                            id !== list.id
+                                                    )
+                                                );
+                                            } else {
+                                                setSelectedLists([
+                                                    ...selectedLists,
+                                                    list.id,
+                                                ]);
+                                            }
+                                        }}
+                                    />
+                                    <label htmlFor={list.id}>{list.name}</label>
+                                </div>
+                            );
+                        })}
+                    </div>
+                ) : (
+                    <div>
+                        You don't have any lists yet. You can add them to help
+                        sort your prayers out
+                    </div>
+                )}
                 <input type="submit" value="Submit" />
             </form>
         </div>
