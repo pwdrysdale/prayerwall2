@@ -10,7 +10,11 @@ export class UserResolver {
         if (req.user && req.user.id) {
             const user = await User.findOne({
                 where: { id: req.user.id },
-                relations: ["createdFollows", "createdFollows.followingId"],
+                relations: [
+                    "createdFollows",
+                    "createdFollows.followingId",
+                    "lists",
+                ],
             });
             return user;
         } else return null;

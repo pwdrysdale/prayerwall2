@@ -62,12 +62,13 @@ const AddPrayer = () => {
                             privat: privateRef.current.checked,
                             answered: answeredRef.current.checked,
                             category: parseFloat(categoryRef.current.value),
+                            lists: selectedLists,
                         },
                     },
                 });
             }
         },
-        [addPrayer]
+        [addPrayer, selectedLists]
     );
 
     if (listLoading) return <div>Loading...</div>;

@@ -11,6 +11,7 @@ import {
 } from "typeorm";
 import { Lazy } from "../utlis/lazyType";
 import { Following } from "./Following";
+import { List } from "./List";
 import { Prayer } from "./Prayer";
 import { PrayerComments } from "./PrayerComments";
 import { PrayerPrayeredBy } from "./PrayerPrayedBy";
@@ -54,6 +55,10 @@ export class User extends BaseEntity {
     })
     @Field(() => [Prayer])
     prayers: Lazy<Prayer[]>;
+
+    @OneToMany(() => List, (list) => list.owner)
+    @Field(() => [List])
+    lists: [List];
 
     @OneToMany(() => PrayerComments, (comment) => comment.user, {
         lazy: true,

@@ -6,7 +6,6 @@ import {
     Resolver,
     PubSub,
     Authorized,
-    ConflictingDefaultWithNullableError,
 } from "type-graphql";
 import { FindManyOptions, In, LessThan } from "typeorm";
 import { Prayer } from "../../entity/Prayer";
@@ -20,8 +19,8 @@ import { PrayerComments } from "../../entity/PrayerComments";
 import { PrayerCommentInput } from "./inputs/PrayerCommentInput";
 import { PubSubEngine } from "graphql-subscriptions";
 import { PrayerPrayeredBy } from "../../entity/PrayerPrayedBy";
-import { PrayerCategory } from "../../../client/src/types";
 import { Following } from "../../entity/Following";
+import { List } from "../../entity/List";
 
 @Resolver()
 export class PrayerResolver {
@@ -152,7 +151,7 @@ export class PrayerResolver {
     @Mutation(() => Prayer)
     async addPrayer(
         @Arg("PrayerInput")
-        { title, body, category, answered, privat }: PrayerInput,
+        { title, body, category, answered, privat, lists }: PrayerInput,
         @Ctx() { req }: AppContext,
         @PubSub() pubSub: PubSubEngine
     ): Promise<Prayer | null> {
@@ -161,6 +160,12 @@ export class PrayerResolver {
                 return null;
             }
 
+            const l = await (
+                await List.findByIds(lists, { relations: ["owner"] })
+            ).filter((ls) => ls.owner.id === req.user.id);
+
+            console.log(l);
+
             const p = await Prayer.create({
                 title,
                 body,
@@ -168,6 +173,7 @@ export class PrayerResolver {
                 answered,
                 category,
                 user: req.user,
+                lists: l,
             }).save();
 
             if (!privat) {

@@ -1,0 +1,5 @@
+mutation Mutation($addPrayerToListInputs: AddPrayerToListInputs!) {
+    addToList(AddPrayerToListInputs: $addPrayerToListInputs) {
+        id
+    }
+}

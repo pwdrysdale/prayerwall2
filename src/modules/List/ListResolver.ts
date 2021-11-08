@@ -1,7 +1,9 @@
 import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { List } from "../../entity/List";
+import { Prayer } from "../../entity/Prayer";
 import { User } from "../../entity/User";
 import { AppContext } from "../../utlis/context";
+import { AddPrayerToListInputs } from "../Prayers/inputs/AddPrayerToListInputs";
 import { ListInput } from "./inputs/ListInput";
 
 @Resolver()
@@ -9,15 +11,14 @@ export class ListResolver {
     @Query(() => [List], { nullable: true })
     async myLists(@Ctx() { req }: AppContext): Promise<List[] | null> {
         try {
-            console.log("User: ", req.user.id);
             const ls = await List.find({
                 where: { owner: { id: req.user.id } },
-                relations: ["prayers"],
+                relations: ["prayers", "prayers.user"],
             });
             console.log(ls);
             return ls;
         } catch (err) {
-            console.log(err);
+            // console.log(err);
             return null;
         }
     }
@@ -36,6 +37,33 @@ export class ListResolver {
                 owner: user,
             }).save();
         } catch {
+            return null;
+        }
+    }
+
+    @Mutation(() => List, { nullable: true })
+    async addToList(
+        @Ctx() { req }: AppContext,
+        @Arg("AddPrayerToListInputs")
+        { prayerId, listId }: AddPrayerToListInputs
+    ): Promise<List | null> {
+        try {
+            const list = await List.findOne(listId, {
+                relations: ["owner", "prayers"],
+            });
+            if (list.owner.id !== req.user.id) {
+                return null;
+            }
+            const prayer = await Prayer.findOne(prayerId);
+            if (list && prayer) {
+                list.prayers.push(prayer);
+                console.log(list);
+                await list.save();
+                return list;
+            }
+            return null;
+        } catch (err) {
+            console.log(err);
             return null;
         }
     }

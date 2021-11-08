@@ -1,5 +1,5 @@
-import { Field, InputType, registerEnumType } from "type-graphql";
-import { IsBoolean, IsEnum, IsString, Length } from "class-validator";
+import { Field, Float, InputType, registerEnumType } from "type-graphql";
+import { IsArray, IsBoolean, IsEnum, IsString, Length } from "class-validator";
 import { PrayerCategory } from "../../../entity/Prayer";
 
 registerEnumType(PrayerCategory, {
@@ -24,6 +24,9 @@ export class PrayerInput {
 
     @Field()
     category: number;
+
+    @Field(() => [Float])
+    lists: number[];
 
     // @Field()
     // status: string;

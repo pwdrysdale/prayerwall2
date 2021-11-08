@@ -31,5 +31,9 @@ query Query($cursor: String) {
                 id
             }
         }
+        lists {
+            id
+            name
+        }
     }
 }

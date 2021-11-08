@@ -73,7 +73,7 @@ export class Prayer extends BaseEntity {
         joinColumn: { name: "prayer_id", referencedColumnName: "id" },
         inverseJoinColumn: { name: "list_id", referencedColumnName: "id" },
     })
-    lists?: List[];
+    lists: [List];
 
     @Field({ defaultValue: 0 })
     prayedByUser: number;

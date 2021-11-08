@@ -1,13 +1,14 @@
 import React from "react";
 
 import { loader } from "graphql.macro";
-import { Following, Prayer, PrayerCategory } from "../../types";
+import { Following, List, Prayer, PrayerCategory } from "../../types";
 import { useMutation, useQuery } from "@apollo/client";
 import moment from "moment";
 import Button from "../HTML/Button";
 import { Link } from "react-router-dom";
 import { useToasts } from "../../store/useToasts";
 const publicPrayers = loader("./PublicPrayers.graphql");
+const addToListMutation = loader("./AddToList.graphql");
 const deletePrayerMutation = loader("../MyPrayers/deletePrayer.graphql");
 const prayedMutation = loader("./Prayed.graphql");
 const followMutation = loader("./Follow.graphql");
@@ -20,6 +21,18 @@ const PublicPrayers = () => {
         variables: { cursor: "" },
         onError: (error) => {
             addToast({ type: "error", message: error.message });
+        },
+    });
+
+    const [addToList] = useMutation(addToListMutation, {
+        awaitRefetchQueries: true,
+        refetchQueries: [{ query: publicPrayers }],
+        errorPolicy: "all",
+        onError: () => {
+            addToast({
+                type: "error",
+                message: "Could not add prayer to list. Sorry. ",
+            });
         },
     });
 
@@ -132,6 +145,44 @@ const PublicPrayers = () => {
                                 >
                                     <Button>Add a comment</Button>
                                 </Link>
+                                {data.me.lists.length === 0 ? (
+                                    <div>
+                                        Create a list so you can add prayers to
+                                        it!
+                                    </div>
+                                ) : (
+                                    data.me.lists.map((l: List) => (
+                                        <div key={l.id}>
+                                            <div>{l.name}</div>
+                                            <Button
+                                                title="Add to List"
+                                                onClick={() =>
+                                                    addToList({
+                                                        variables: {
+                                                            addPrayerToListInputs:
+                                                                {
+                                                                    listId:
+                                                                        typeof l.id ===
+                                                                        "string"
+                                                                            ? parseFloat(
+                                                                                  l.id
+                                                                              )
+                                                                            : l.id,
+                                                                    prayerId:
+                                                                        typeof P.id ===
+                                                                        "string"
+                                                                            ? parseFloat(
+                                                                                  P.id
+                                                                              )
+                                                                            : P.id,
+                                                                },
+                                                        },
+                                                    })
+                                                }
+                                            ></Button>
+                                        </div>
+                                    ))
+                                )}
                                 <Button
                                     onClick={() => {
                                         prayed({

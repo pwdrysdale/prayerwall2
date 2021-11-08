@@ -8,6 +8,11 @@ query GET_LISTS {
         prayers {
             id
             title
+            body
+            user {
+                id
+                username
+            }
         }
     }
 }

@@ -2,7 +2,7 @@ import { useQuery } from "@apollo/client";
 import { loader } from "graphql.macro";
 import React from "react";
 import { useToasts } from "../../store/useToasts";
-import { List } from "../../types";
+import { List, Prayer } from "../../types";
 
 const GET_MY_LISTS = loader("./MyLists.graphql");
 
@@ -30,6 +30,23 @@ const MyLists = () => {
                             <h1>{list.name}</h1>
                             <div>{list.description}</div>
                             <div>{list.privat ? "Private" : "Public"}</div>
+
+                            {!list.prayers.length ? (
+                                <div>This list is empty </div>
+                            ) : (
+                                <div>
+                                    <h2>Prayers</h2>
+                                    {list.prayers.map((P: Prayer) => {
+                                        return (
+                                            <div key={P.id}>
+                                                {P.title}
+                                                {P.body}
+                                                {P.user.username}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
                         </div>
                     );
                 })}

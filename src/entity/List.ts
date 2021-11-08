@@ -38,12 +38,7 @@ export class List extends BaseEntity {
 
     @Field(() => [Prayer], { nullable: true })
     @ManyToMany(() => Prayer, (prayer) => prayer.lists, { nullable: true })
-    @JoinTable({
-        name: "prayer_list",
-        joinColumn: { name: "list_id", referencedColumnName: "id" },
-        inverseJoinColumn: { name: "prayer_id", referencedColumnName: "id" },
-    })
-    prayers?: Prayer[];
+    prayers: Prayer[];
 
     @Field()
     @CreateDateColumn({
