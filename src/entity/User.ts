@@ -40,6 +40,10 @@ export class User extends BaseEntity {
     @Column({ nullable: true })
     githubId: string;
 
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    image: string;
+
     @OneToMany(() => Following, (following) => following.userId)
     @Field(() => [Following])
     createdFollows: [Following];

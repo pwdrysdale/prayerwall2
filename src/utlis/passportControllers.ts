@@ -1,6 +1,7 @@
 import passport from "passport";
 import { User } from "../entity/User";
 import dotenv from "dotenv";
+import { parseWithOptions } from "date-fns/fp";
 
 dotenv.config();
 
@@ -47,13 +48,17 @@ passport.use(
                 if (!doc) {
                     const newUser = User.create({
                         googleId: profile.id,
-                        username: profile.name.givenName,
+                        username: profile.displayName,
+                        image: profile.photos[profile.photos.length - 1].value,
                     });
                     await newUser.save();
                     cb(null, newUser);
                     return;
                 }
+                console.log(profile);
 
+                doc.image = profile.photos[profile.photos.length - 1].value;
+                await doc.save();
                 cb(null, doc);
                 return;
             } catch (err) {
@@ -72,6 +77,7 @@ passport.use(
         },
 
         async (accessToken, refreshToken, profile, cb) => {
+            console.log(profile);
             try {
                 const doc = await User.findOne({ twitterId: profile.id });
 
@@ -79,11 +85,14 @@ passport.use(
                     const newUser = User.create({
                         twitterId: profile.id,
                         username: profile.username,
+                        image: profile.photos[profile.photos.length - 1].value,
                     });
                     await newUser.save();
                     cb(null, newUser);
                     return;
                 }
+                doc.image = profile.photos[profile.photos.length - 1].value;
+                doc.save();
 
                 cb(null, doc);
                 return;
@@ -109,12 +118,15 @@ passport.use(
                     const newUser = User.create({
                         githubId: profile.id,
                         username: profile.username,
+                        image: profile.photos[profile.photos.length - 1].value,
                     });
                     await newUser.save();
                     cb(null, newUser);
                     return;
                 }
 
+                doc.image = profile.photos[profile.photos.length - 1].value;
+                doc.save();
                 cb(null, doc);
                 return;
             } catch (err) {

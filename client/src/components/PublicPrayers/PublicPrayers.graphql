@@ -15,8 +15,9 @@ query Query($cursor: String) {
             }
         }
         user {
-            username
             id
+            username
+            image
         }
         comments {
             id

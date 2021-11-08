@@ -33,6 +33,7 @@ const AuthScreen = () => {
             <div>
                 Userrole: {me.me?.role || "Anonymous Users do not have a role"}
             </div>
+            <img src={me.me?.image} alt={me.me?.username} />
             <Button onClick={googleLogin} title="Login with Google" />
             <Button onClick={twitterLogin} title="Login with Twitter" />
             <Button onClick={githubLogin} title="Login with Github" />

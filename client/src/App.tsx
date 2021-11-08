@@ -12,6 +12,7 @@ import MyPrayers from "./components/MyPrayers/MyPrayers";
 import Navbar from "./components/Navbar/Navbar";
 import PublicPrayers from "./components/PublicPrayers/PublicPrayers";
 import Toasts from "./components/Toasts/Toasts";
+import User from "./components/User/User";
 import AuthScreen from "./screens/AuthScreen/AuthScreen";
 import GiveScreen from "./screens/GiveScreen/GiveScreen";
 
@@ -41,6 +42,7 @@ function App() {
                 <Route path="/lists/my" component={MyLists} exact />
                 <Route path="/lists/add" component={AddList} exact />
                 <Route path="/user/following" component={Following} exact />
+                <Route path="/user/:id" component={User} exact />
                 <Route path="/give" component={GiveScreen} exact />
             </Switch>
             <Events />

@@ -53,6 +53,7 @@ const Following = () => {
             <h1>People I'm Following</h1>
             {data.getMyFollowers?.map((user: User) => (
                 <div key={user.id}>
+                    <img src={user.image} alt={user.username} />
                     <h3>{user.username}</h3>
                     <Button
                         onClick={() =>

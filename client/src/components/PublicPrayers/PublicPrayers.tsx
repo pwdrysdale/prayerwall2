@@ -87,7 +87,10 @@ const PublicPrayers = () => {
             <div>
                 {data.publicPrayers.map((P: Prayer, idx: number) => (
                     <div key={idx}>
-                        <div>{P.user?.username}</div>
+                        <Link to={`/user/${P.user?.id}`}>
+                            <img src={P.user?.image} alt={P.user?.username} />
+                            <div>{P.user?.username}</div>
+                        </Link>
                         <h3>{P.title}</h3>
                         <div>{P.body}</div>
                         <div>{P.privat ? "Private" : "Public"}</div>

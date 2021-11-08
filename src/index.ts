@@ -20,6 +20,7 @@ import passportRoutes from "./utlis/passportRoutes";
 import { PrayerResolver } from "./modules/Prayers/PrayerResolver";
 import { EventsSubscription } from "./modules/EventsSub/EventsSubscription";
 import { ListResolver } from "./modules/List/ListResolver";
+import { ListExtensionResolver } from "./modules/List/ListExtensionResolver";
 
 const startUp = async () => {
     try {
@@ -89,6 +90,7 @@ const startUp = async () => {
                 UserResolver,
                 PrayerResolver,
                 ListResolver,
+                // ListExtensionResolver,
                 EventsSubscription,
             ],
             authChecker,

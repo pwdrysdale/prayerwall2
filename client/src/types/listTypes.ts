@@ -4,6 +4,7 @@ export interface List {
     id: number;
     name: string;
     description: string;
+    length: number;
     privat: boolean;
     createdDate: Date;
     updateDate: Date;

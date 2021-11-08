@@ -1,4 +1,12 @@
-import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import {
+    Arg,
+    Ctx,
+    FieldResolver,
+    Mutation,
+    Query,
+    Resolver,
+    Root,
+} from "type-graphql";
 import { List } from "../../entity/List";
 import { Prayer } from "../../entity/Prayer";
 import { User } from "../../entity/User";

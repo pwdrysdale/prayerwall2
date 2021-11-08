@@ -16,6 +16,10 @@ const MyLists = () => {
         },
     });
 
+    React.useEffect(() => {
+        console.log(data);
+    }, [data]);
+
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -29,6 +33,7 @@ const MyLists = () => {
                         <div key={list.id}>
                             <h1>{list.name}</h1>
                             <div>{list.description}</div>
+                            <div>{list.length}</div>
                             <div>{list.privat ? "Private" : "Public"}</div>
 
                             {!list.prayers.length ? (

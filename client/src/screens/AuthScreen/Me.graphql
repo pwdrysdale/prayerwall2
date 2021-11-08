@@ -2,5 +2,6 @@ query Query {
     me {
         username
         role
+        image
     }
 }

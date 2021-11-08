@@ -3,6 +3,7 @@ query GET_LISTS {
         id
         name
         description
+        length
         privat
         createdDate
         prayers {

@@ -1,4 +1,4 @@
-import { Field, ObjectType } from "type-graphql";
+import { Field, Float, ObjectType } from "type-graphql";
 import {
     BaseEntity,
     Column,
@@ -31,6 +31,11 @@ export class List extends BaseEntity {
     @Field()
     @Column()
     description: string;
+
+    @Field(() => Float)
+    get length(): number {
+        return this.prayers.filter((P: Prayer) => P.privat === false).length;
+    }
 
     @Field(() => User)
     @ManyToOne(() => User)
