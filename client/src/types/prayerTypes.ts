@@ -1,4 +1,4 @@
-import { PrayedBy, PrayerComments, User } from ".";
+import { List, PrayedBy, PrayerComments, User } from ".";
 
 export enum PrayerCategory {
     "thanks",
@@ -15,6 +15,7 @@ export interface Prayer {
     category: PrayerCategory;
     user: User;
     comments: [PrayerComments];
+    lists: [List];
     prayedBy?: [PrayedBy];
     prayedByUser: number;
     createdDate: Date;

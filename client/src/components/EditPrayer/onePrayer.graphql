@@ -9,5 +9,16 @@ query Query($id: Float!) {
         comments {
             id
         }
+        lists {
+            id
+            name
+            description
+            privat
+        }
+    }
+    myLists {
+        id
+        name
+        privat
     }
 }

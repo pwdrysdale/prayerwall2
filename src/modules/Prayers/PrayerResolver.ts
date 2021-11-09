@@ -103,8 +103,8 @@ export class PrayerResolver {
         @Arg("id") id: number
     ): Promise<Prayer | null> {
         try {
-            const p = await Prayer.findOne(id, {
-                relations: ["user", "comments", "comments.user"],
+            const p: Prayer = await Prayer.findOne(id, {
+                relations: ["user", "comments", "comments.user", "lists"],
             });
             if (p && (p.privat === false || p.user.id === req.user.id)) {
                 return p;
@@ -196,15 +196,21 @@ export class PrayerResolver {
     @Mutation(() => Prayer, { nullable: true })
     async editPrayer(
         @Arg("EditPrayerInput")
-        { id, title, body, category, answered, privat }: EditPrayerInput,
+        { id, title, body, category, answered, privat, lists }: EditPrayerInput,
         @Ctx() { req }: AppContext
     ): Promise<Prayer | null> {
         try {
-            console.log("In edit prayer");
             if (!req.user) {
                 console.log("no user");
                 return null;
             }
+
+            console.log({ id, title, body, category, answered, privat, lists });
+
+            const l = await (
+                await List.findByIds(lists, { relations: ["owner"] })
+            ).filter((ls) => ls.owner.id === req.user.id);
+            console.log(l);
 
             const p: Prayer = await Prayer.findOne(id, {
                 relations: ["user", "comments"],
@@ -223,6 +229,7 @@ export class PrayerResolver {
                     category,
                     answered,
                     privat,
+                    lists: l,
                 });
 
                 const d: Prayer = await u.save();

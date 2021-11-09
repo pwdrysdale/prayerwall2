@@ -3,7 +3,7 @@ import { loader } from "graphql.macro";
 import { useMutation, useQuery } from "@apollo/client";
 import { RouteComponentProps } from "react-router-dom";
 
-import { PrayerCategory } from "../../types";
+import { List, PrayerCategory } from "../../types";
 
 const onePrayerQ = loader("./onePrayer.graphql");
 const EditPrayerMutation = loader("./EditPrayer.graphql");
@@ -26,9 +26,8 @@ const EditPrayer: React.FC<Component> = ({ match }) => {
     const [body, setBody] = useState("");
     const [privat, setPrivat] = useState<boolean>(true);
     const [answered, setAnswered] = useState<boolean>(false);
-    const [category, setCategory] = useState<PrayerCategory>(
-        PrayerCategory.thanks
-    );
+    const [category, setCategory] = useState<number>(0);
+    const [selectedLists, setSelectedLists] = useState<number[]>([]);
 
     const { id } = match.params;
 
@@ -47,13 +46,18 @@ const EditPrayer: React.FC<Component> = ({ match }) => {
     });
 
     useEffect(() => {
+        console.log(data);
+    }, [data]);
+
+    useEffect(() => {
         if (data && data.onePrayer) {
             const { title, body, privat, answered, category } = data.onePrayer;
             setTitle(title);
             setBody(body);
             setPrivat(privat);
             setAnswered(answered || false);
-            setCategory(PrayerCategory[category] as unknown as PrayerCategory);
+            setCategory(category);
+            setSelectedLists(data.onePrayer.lists?.map((l: List) => l.id));
         }
     }, [data]);
 
@@ -70,15 +74,16 @@ const EditPrayer: React.FC<Component> = ({ match }) => {
                     typeof category === "string"
                         ? parseFloat(category)
                         : category,
+                lists: selectedLists,
             };
-
+            console.log(editPrayerInput);
             editPrayer({
                 variables: {
                     editPrayerInput,
                 },
             });
         },
-        [editPrayer, body, privat, answered, category, id, title]
+        [editPrayer, body, privat, answered, category, id, title, selectedLists]
     );
 
     if (loading) {
@@ -158,6 +163,46 @@ const EditPrayer: React.FC<Component> = ({ match }) => {
                             })}
                     </select>
                 </div>
+                {data.myLists.length > 0 ? (
+                    <div>
+                        <h3>Select the lists you want to add this prayer to</h3>
+                        {data.myLists.map((list: any) => {
+                            return (
+                                <div>
+                                    <input
+                                        type="checkbox"
+                                        id={list.id}
+                                        checked={selectedLists.includes(
+                                            list.id
+                                        )}
+                                        onChange={() => {
+                                            if (
+                                                selectedLists.includes(list.id)
+                                            ) {
+                                                setSelectedLists(
+                                                    selectedLists.filter(
+                                                        (id: number) =>
+                                                            id !== list.id
+                                                    )
+                                                );
+                                            } else {
+                                                setSelectedLists([
+                                                    ...selectedLists,
+                                                    list.id,
+                                                ]);
+                                            }
+                                        }}
+                                    />
+                                    <label htmlFor={list.id}>{list.name}</label>
+                                </div>
+                            );
+                        })}
+                    </div>
+                ) : (
+                    <div>
+                        <h3>You don't have any lists yet. Create one!</h3>
+                    </div>
+                )}
                 <input type="submit" value="Submit" />
             </form>
         </div>

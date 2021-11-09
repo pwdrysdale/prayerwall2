@@ -54,11 +54,10 @@ export class User extends BaseEntity {
 
     // @OneToMany(() => Prayer, (entry) => Prayer.user, {
     @OneToMany(() => Prayer, (prayer) => prayer.user, {
-        lazy: true,
         nullable: true,
     })
     @Field(() => [Prayer])
-    prayers: Lazy<Prayer[]>;
+    prayers: Prayer[];
 
     @OneToMany(() => List, (list) => list.owner)
     @Field(() => [List])

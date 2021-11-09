@@ -66,8 +66,8 @@ export class Prayer extends BaseEntity {
     @OneToMany(() => PrayerPrayeredBy, (prayedBy) => prayedBy.prayer)
     prayedBy: [PrayerPrayeredBy];
 
-    @Field(() => [List], { nullable: true })
-    @ManyToMany(() => List, (list) => list.prayers, { nullable: true })
+    @Field(() => [List], { defaultValue: [] })
+    @ManyToMany(() => List, (list) => list.prayers)
     @JoinTable({
         name: "prayer_list",
         joinColumn: { name: "prayer_id", referencedColumnName: "id" },
