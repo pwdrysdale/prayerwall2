@@ -54,8 +54,8 @@ export class Prayer extends BaseEntity {
     @Column({ default: false })
     featured?: boolean;
 
-    @Field(() => User, { nullable: true })
-    @ManyToOne(() => User, { nullable: true })
+    @Field(() => User)
+    @ManyToOne(() => User)
     user: User;
 
     @Field(() => [PrayerComments])

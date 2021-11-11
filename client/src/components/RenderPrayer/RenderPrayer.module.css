@@ -1,0 +1,10 @@
+.card {
+    display: flex;
+    flex-direction: row;
+}
+
+.vis_detail {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+}

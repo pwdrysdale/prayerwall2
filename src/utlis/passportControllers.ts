@@ -55,7 +55,6 @@ passport.use(
                     cb(null, newUser);
                     return;
                 }
-                console.log(profile);
 
                 doc.image = profile.photos[profile.photos.length - 1].value;
                 await doc.save();
@@ -77,7 +76,6 @@ passport.use(
         },
 
         async (accessToken, refreshToken, profile, cb) => {
-            console.log(profile);
             try {
                 const doc = await User.findOne({ twitterId: profile.id });
 

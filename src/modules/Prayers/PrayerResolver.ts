@@ -36,7 +36,13 @@ export class PrayerResolver {
                 take: 2,
                 order: { createdDate: "DESC" },
                 where: { privat: false },
-                relations: ["user", "comments", "prayedBy", "prayedBy.user"],
+                relations: [
+                    "user",
+                    "comments",
+                    "prayedBy",
+                    "prayedBy.user",
+                    "user.prayers",
+                ],
             };
 
             if (cursor) {
@@ -50,7 +56,14 @@ export class PrayerResolver {
 
             const p: Prayer[] = await Prayer.find(options);
             if (p) {
-                if (req.user && req.user.id) {
+                if (!req.user) {
+                    console.log("Still in here");
+                    const returnVal: Prayer[] = p.map(
+                        (prayer: Prayer): Prayer =>
+                            Object.assign(prayer, { prayedByUser: 0 })
+                    );
+                    return returnVal;
+                } else {
                     const status = p.map(
                         (p: Prayer): Prayer =>
                             Object.assign(p, {
@@ -61,8 +74,6 @@ export class PrayerResolver {
                             })
                     );
                     return status;
-                } else {
-                    return p;
                 }
             } else return null;
         } catch (error) {

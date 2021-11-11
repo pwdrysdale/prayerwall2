@@ -1,17 +1,14 @@
 import React from "react";
 
 import { loader } from "graphql.macro";
-import { Following, List, Prayer, PrayerCategory } from "../../types";
+import { List, Prayer } from "../../types";
 import { useMutation, useQuery } from "@apollo/client";
-import moment from "moment";
 import Button from "../HTML/Button";
 import { Link } from "react-router-dom";
 import { useToasts } from "../../store/useToasts";
+import RenderPrayer from "../RenderPrayer/RenderPrayer";
 const publicPrayers = loader("./PublicPrayers.graphql");
 const addToListMutation = loader("./AddToList.graphql");
-const deletePrayerMutation = loader("../MyPrayers/deletePrayer.graphql");
-const prayedMutation = loader("./Prayed.graphql");
-const followMutation = loader("./Follow.graphql");
 
 const PublicPrayers = () => {
     const { addToast } = useToasts();
@@ -36,38 +33,11 @@ const PublicPrayers = () => {
         },
     });
 
-    const [deletePrayer, { loading: deleteLoading }] = useMutation(
-        deletePrayerMutation,
-        {
-            awaitRefetchQueries: true,
-            refetchQueries: [{ query: publicPrayers }],
-        }
-    );
-
-    const [prayed, { loading: prayedLoading }] = useMutation(prayedMutation, {
-        awaitRefetchQueries: true,
-        refetchQueries: [{ query: publicPrayers }],
-    });
-
-    const [follow] = useMutation(followMutation, {
-        awaitRefetchQueries: true,
-        refetchQueries: [{ query: publicPrayers }],
-    });
-
-    // const next = () => {
-    //     const cursor: string = data.publicPrayers[data.publicPrayers.length - 1].createdDate
-
-    //     const { data: newData } = useQuery(publicPrayers,{errorPolicy: 'all', variables: {cursor}})
-
-    //     return
-
-    // }
-
     React.useEffect(() => {
         console.log(data);
     }, [data]);
 
-    if (loading || deleteLoading || prayedLoading) return <div>Loading...</div>;
+    if (loading) return <div>Loading...</div>;
     if (error) {
         console.error(error);
         return <div>Sorry, there was an error...</div>;
@@ -87,67 +57,10 @@ const PublicPrayers = () => {
             <div>
                 {data.publicPrayers.map((P: Prayer, idx: number) => (
                     <div key={idx}>
-                        <Link to={`/user/${P.user?.id}`}>
-                            <img src={P.user?.image} alt={P.user?.username} />
-                            <div>{P.user?.username}</div>
-                        </Link>
-                        <h3>{P.title}</h3>
-                        <div>{P.body}</div>
-                        <div>{P.privat ? "Private" : "Public"}</div>
-                        <div>{PrayerCategory[P.category]}</div>
-                        <div>
-                            {P.answered ? "Answered" : "Not answered yet"}
-                        </div>
-                        <div>{P.comments.length} Comments</div>
-                        <div>Prayed {P.prayedBy?.length} times</div>
-                        <div>{moment(P.createdDate).format("LLLL")}</div>
+                        <RenderPrayer prayer={P} me={data.me} />
+
                         {data.me?.id ? (
                             <>
-                                <div>Prayed by you {P.prayedByUser} times</div>
-
-                                {data.me.id !== P.user.id &&
-                                !data.me.createdFollows
-                                    .map((f: Following) => f.followingId.id)
-                                    .includes(P.user.id) ? (
-                                    <Button
-                                        onClick={async () => {
-                                            const value = await follow({
-                                                variables: {
-                                                    id:
-                                                        typeof P.user.id ===
-                                                        "string"
-                                                            ? parseFloat(
-                                                                  P.user.id
-                                                              )
-                                                            : P.user.id,
-                                                },
-                                            });
-                                            if (value) {
-                                                addToast({
-                                                    type: "success",
-                                                    message: "Followed!",
-                                                });
-                                            }
-                                        }}
-                                    >
-                                        Follow
-                                    </Button>
-                                ) : (
-                                    data.me.id !== P.user.id && (
-                                        <div>
-                                            You already follow this person!
-                                        </div>
-                                    )
-                                )}
-                                <Link
-                                    to={`/prayer/addcomment/${
-                                        typeof P.id === "string"
-                                            ? parseFloat(P.id)
-                                            : P.id
-                                    }`}
-                                >
-                                    <Button>Add a comment</Button>
-                                </Link>
                                 {data.me.lists.length === 0 ? (
                                     <div>
                                         Create a list so you can add prayers to
@@ -185,44 +98,6 @@ const PublicPrayers = () => {
                                             ></Button>
                                         </div>
                                     ))
-                                )}
-                                <Button
-                                    onClick={() => {
-                                        prayed({
-                                            variables: {
-                                                id:
-                                                    typeof P.id === "string"
-                                                        ? parseFloat(P.id)
-                                                        : P.id,
-                                            },
-                                        });
-                                    }}
-                                >
-                                    Prayed just now
-                                </Button>
-                                {data.me && P.user?.id === data.me?.id && (
-                                    <>
-                                        <Button
-                                            onClick={() => {
-                                                deletePrayer({
-                                                    variables: {
-                                                        id:
-                                                            typeof P.id ===
-                                                            "string"
-                                                                ? parseFloat(
-                                                                      P.id
-                                                                  )
-                                                                : P.id,
-                                                    },
-                                                });
-                                            }}
-                                        >
-                                            Delete Prayer
-                                        </Button>
-                                        <Link to={`/prayer/edit/${P.id}`}>
-                                            <Button>Edit</Button>
-                                        </Link>
-                                    </>
                                 )}
                             </>
                         ) : (

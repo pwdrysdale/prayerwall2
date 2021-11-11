@@ -1,10 +1,41 @@
-import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import {
+    Arg,
+    Authorized,
+    Ctx,
+    FieldResolver,
+    Mutation,
+    Query,
+    Resolver,
+    Root,
+} from "type-graphql";
 import { Following } from "../../entity/Following";
+import { Prayer } from "../../entity/Prayer";
 import { User, UserRole } from "../../entity/User";
 import { AppContext } from "../../utlis/context";
 
-@Resolver()
+@Resolver(User)
 export class UserResolver {
+    @FieldResolver(() => Prayer)
+    async prayers(
+        @Root() user: User,
+        @Ctx() { req }: AppContext
+    ): Promise<Prayer[]> {
+        const u: User = await User.findOne(user.id, {
+            relations: ["prayers", "prayers.user"],
+        });
+
+        if (req.user) {
+            return u.prayers.filter(
+                (prayer: Prayer) =>
+                    prayer.user.id === req.user.id || prayer.privat === false
+            );
+        } else {
+            return u.prayers.filter(
+                (prayer: Prayer) => prayer.privat === false
+            );
+        }
+    }
+
     @Query(() => User, { nullable: true })
     async me(@Ctx() { req }: AppContext): Promise<User | null> {
         if (req.user && req.user.id) {

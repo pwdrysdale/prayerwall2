@@ -1,5 +1,5 @@
 import { GraphQLScalarType } from "graphql";
-import { Field, ID, ObjectType, Resolver } from "type-graphql";
+import { Field, Float, ID, ObjectType, Resolver } from "type-graphql";
 import {
     Entity,
     PrimaryGeneratedColumn,
@@ -24,19 +24,16 @@ export enum UserRole {
 @ObjectType()
 @Entity()
 export class User extends BaseEntity {
-    @Field((): GraphQLScalarType => ID)
+    @Field(() => Float)
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Field({ nullable: true })
     @Column({ nullable: true })
     googleId: string;
 
-    @Field({ nullable: true })
     @Column({ nullable: true })
     twitterId: string;
 
-    @Field({ nullable: true })
     @Column({ nullable: true })
     githubId: string;
 
@@ -53,9 +50,8 @@ export class User extends BaseEntity {
     followingMe: [Following];
 
     // @OneToMany(() => Prayer, (entry) => Prayer.user, {
-    @OneToMany(() => Prayer, (prayer) => prayer.user, {
-        nullable: true,
-    })
+
+    @OneToMany(() => Prayer, (prayer) => prayer.user)
     @Field(() => [Prayer])
     prayers: Prayer[];
 
@@ -64,11 +60,10 @@ export class User extends BaseEntity {
     lists: [List];
 
     @OneToMany(() => PrayerComments, (comment) => comment.user, {
-        lazy: true,
         nullable: true,
     })
     @Field(() => [PrayerComments])
-    comments: Lazy<PrayerComments[]>;
+    comments: PrayerComments[];
 
     @OneToMany(() => PrayerPrayeredBy, (prayedBy) => prayedBy.user, {
         nullable: true,

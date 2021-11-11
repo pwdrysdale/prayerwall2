@@ -1,4 +1,5 @@
 import { Following } from ".";
+import { Prayer } from ".";
 
 export interface User {
     id: number;
@@ -6,4 +7,5 @@ export interface User {
     image: string;
     createdFollows: [Following];
     followingMe: [Following];
+    prayers: [Prayer];
 }

@@ -16,6 +16,8 @@ import User from "./components/User/User";
 import AuthScreen from "./screens/AuthScreen/AuthScreen";
 import GiveScreen from "./screens/GiveScreen/GiveScreen";
 
+import "./GlobalStyles.css";
+
 function App() {
     return (
         <Router>

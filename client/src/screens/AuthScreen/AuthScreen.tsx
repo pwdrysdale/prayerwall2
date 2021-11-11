@@ -2,6 +2,7 @@ import { useQuery } from "@apollo/client";
 import Button from "../../components/HTML/Button";
 
 import { loader } from "graphql.macro";
+import Card from "../../components/UserCards/Card";
 const Me = loader("./Me.graphql");
 
 const AuthScreen = () => {
@@ -29,11 +30,11 @@ const AuthScreen = () => {
 
     return (
         <div>
-            <div>Login: {me.me?.username || "Anonymous User"}</div>
-            <div>
-                Userrole: {me.me?.role || "Anonymous Users do not have a role"}
-            </div>
-            <img src={me.me?.image} alt={me.me?.username} />
+            <Card
+                img={me.me?.image}
+                username={me.me?.username || "Anonymous User"}
+                role={me.me?.role || "Not logged in"}
+            />
             <Button onClick={googleLogin} title="Login with Google" />
             <Button onClick={twitterLogin} title="Login with Twitter" />
             <Button onClick={githubLogin} title="Login with Github" />
