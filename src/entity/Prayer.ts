@@ -75,7 +75,7 @@ export class Prayer extends BaseEntity {
     })
     lists: [List];
 
-    @Field({ defaultValue: 0 })
+    @Field({ defaultValue: null })
     prayedByUser: number;
 
     @Field()

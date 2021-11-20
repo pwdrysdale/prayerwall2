@@ -6,6 +6,8 @@ import {
     Resolver,
     PubSub,
     Authorized,
+    FieldResolver,
+    Root,
 } from "type-graphql";
 import { FindManyOptions, In, LessThan } from "typeorm";
 import { Prayer } from "../../entity/Prayer";
@@ -22,8 +24,20 @@ import { PrayerPrayeredBy } from "../../entity/PrayerPrayedBy";
 import { Following } from "../../entity/Following";
 import { List } from "../../entity/List";
 
-@Resolver()
+@Resolver(Prayer)
 export class PrayerResolver {
+    @FieldResolver({ nullable: true })
+    async prayedByUser(
+        @Root() prayer: Prayer,
+        @Ctx() { req }: AppContext
+    ): Promise<number | null> {
+        if (!req.user) return null;
+        const prayedBy = await PrayerPrayeredBy.find({
+            where: { prayerId: prayer.id, userId: req.user.id },
+        });
+        return prayedBy.length;
+    }
+
     // Get all the public prayers
     // Authh: all users
     @Query((): typeof Prayer[] => [Prayer], { nullable: true })
@@ -36,13 +50,7 @@ export class PrayerResolver {
                 take: 2,
                 order: { createdDate: "DESC" },
                 where: { privat: false },
-                relations: [
-                    "user",
-                    "comments",
-                    "prayedBy",
-                    "prayedBy.user",
-                    "user.prayers",
-                ],
+                relations: ["user", "comments", "prayedBy", "prayedBy.user"],
             };
 
             if (cursor) {
