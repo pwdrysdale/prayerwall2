@@ -97,7 +97,7 @@ const startUp = async () => {
         });
 
         const server = new ApolloServer({
-            introspection: false,
+            // introspection: false,
             schema,
             plugins: [
                 {

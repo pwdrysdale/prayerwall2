@@ -23,10 +23,31 @@ export class ListResolver {
                 where: { owner: { id: req.user.id } },
                 relations: ["prayers", "prayers.user"],
             });
-            console.log(ls);
+            // console.log(ls);
             return ls;
         } catch (err) {
-            // console.log(err);
+            console.log(err);
+            return null;
+        }
+    }
+
+    @Query(() => List, { nullable: true })
+    async singleList(
+        @Ctx() { req }: AppContext,
+        @Arg("id") id: number
+    ): Promise<List | null> {
+        console.log("Got to the route at least");
+        try {
+            const list = await List.findOne(id, {
+                relations: ["owner", "prayers", "prayers.user"],
+            });
+            console.log(list.owner);
+            if (list.owner.id === req.user.id || list.privat !== true) {
+                return list;
+            }
+            return null;
+        } catch (err) {
+            console.log(err);
             return null;
         }
     }
@@ -73,6 +94,26 @@ export class ListResolver {
         } catch (err) {
             console.log(err);
             return null;
+        }
+    }
+
+    @Mutation(() => Boolean, { nullable: true })
+    async deleteList(
+        @Ctx() { req }: AppContext,
+        @Arg("id") id: number
+    ): Promise<boolean> {
+        try {
+            const list = await List.findOne(id, {
+                relations: ["owner"],
+            });
+            if (list.owner.id === req.user.id) {
+                await List.delete(id);
+                return true;
+            }
+            return false;
+        } catch (err) {
+            console.log(err);
+            return false;
         }
     }
 }

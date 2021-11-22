@@ -4,7 +4,6 @@ import { loader } from "graphql.macro";
 import { List, Prayer } from "../../types";
 import { useMutation, useQuery } from "@apollo/client";
 import Button from "../HTML/Button";
-import { Link } from "react-router-dom";
 import { useToasts } from "../../store/useToasts";
 import RenderPrayer from "../RenderPrayer/RenderPrayer";
 const publicPrayers = loader("./PublicPrayers.graphql");

@@ -1,6 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { loader } from "graphql.macro";
 import React from "react";
+import { Link } from "react-router-dom";
 import { useToasts } from "../../store/useToasts";
 import { List, Prayer } from "../../types";
 
@@ -31,7 +32,9 @@ const MyLists = () => {
                 {data.myLists?.map((list: List) => {
                     return (
                         <div key={list.id}>
-                            <h1>{list.name}</h1>
+                            <Link to={`/lists/${list.id}`}>
+                                <h1>{list.name}</h1>
+                            </Link>
                             <div>{list.description}</div>
                             <div>{list.length}</div>
                             <div>{list.privat ? "Private" : "Public"}</div>

@@ -1,0 +1,17 @@
+query SingleList($singleListId: Float!) {
+    singleList(id: $singleListId) {
+        id
+        privat
+        name
+        description
+        prayers {
+            title
+            body
+            category
+            user {
+                image
+                username
+            }
+        }
+    }
+}

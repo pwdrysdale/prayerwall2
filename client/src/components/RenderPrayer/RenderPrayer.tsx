@@ -94,7 +94,11 @@ const FollowButton = ({ me, prayer }: { me: User; prayer: Prayer }) => {
     });
 
     if (!me) {
-        return <div>Login to follow</div>;
+        return (
+            <div>
+                <Link to="/login">Login to follow</Link>
+            </div>
+        );
     }
 
     // if you are not the owner of the prayer and you are not following the user

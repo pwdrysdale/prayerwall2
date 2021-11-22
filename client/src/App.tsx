@@ -17,6 +17,7 @@ import AuthScreen from "./screens/AuthScreen/AuthScreen";
 import GiveScreen from "./screens/GiveScreen/GiveScreen";
 
 import "./GlobalStyles.css";
+import List from "./components/List/List";
 
 function App() {
     return (
@@ -43,6 +44,7 @@ function App() {
                 />
                 <Route path="/lists/my" component={MyLists} exact />
                 <Route path="/lists/add" component={AddList} exact />
+                <Route path="/lists/:id" component={List} exact />
                 <Route path="/user/following" component={Following} exact />
                 <Route path="/user/:id" component={User} exact />
                 <Route path="/give" component={GiveScreen} exact />
