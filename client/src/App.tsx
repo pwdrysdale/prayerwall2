@@ -18,6 +18,7 @@ import GiveScreen from "./screens/GiveScreen/GiveScreen";
 
 import "./GlobalStyles.css";
 import List from "./components/List/List";
+import FrontScreen from "./screens/GiveScreen/FrontScreen/FrontScreen";
 
 function App() {
     return (
@@ -27,6 +28,7 @@ function App() {
             <p>App is up and change are made</p>
             <Navbar />
             <Switch>
+                <Route exact path="/" component={FrontScreen} />
                 <Route path="/login" component={AuthScreen} exact />
                 <Route path="/prayer/add" component={AddPrayer} exact />
                 <Route path="/prayer/my" component={MyPrayers} exact />

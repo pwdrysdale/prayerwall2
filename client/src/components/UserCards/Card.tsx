@@ -8,13 +8,13 @@ const Body = ({
     username,
     role,
 }: {
-    img: string;
+    img: string | null;
     username: string;
     role?: string;
 }) => {
     return (
         <div className={styles.card}>
-            <ProfileImage src={img} alt={username} />
+            {img && <ProfileImage src={img} alt={username} />}
             <h3>{username}</h3>
             {role && <h3>{role}</h3>}
         </div>
@@ -27,7 +27,7 @@ const Card = ({
     link,
     role,
 }: {
-    img: string;
+    img: string | null;
     username: string;
     link?: string;
     role?: string;

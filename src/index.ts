@@ -59,7 +59,6 @@ const startUp = async () => {
         const corsOptions: CorsOptions = {
             credentials: true,
             origin: (origin, callback) => {
-                console.log("Checking cors here");
                 if (allowedOrigins.includes(origin))
                     return callback(null, true);
 
