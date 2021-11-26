@@ -3,6 +3,8 @@
 * {
     box-sizing: border-box;
     font-family: "Cormorant Garamond", serif;
+    margin: 0;
+    padding: 0;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -15,4 +17,12 @@
 a {
     text-decoration: none;
     color: inherit;
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 55px;
+    width: 100%;
+    min-height: 100vh;
 }

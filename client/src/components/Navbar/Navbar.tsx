@@ -4,11 +4,13 @@ import { Link } from "react-router-dom";
 import { userInfo } from "../../store/userInfo";
 import Card from "../UserCards/Card";
 
+import styles from "./navstyles.module.css";
+
 const Navbar = () => {
     const { user } = userInfo();
 
     return (
-        <div>
+        <div className={styles.navbar}>
             <Card
                 img={user.image}
                 username={user.username || "Anonymous User"}

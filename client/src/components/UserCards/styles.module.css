@@ -3,6 +3,8 @@
     height: 35px;
     border-radius: 50%;
     object-fit: cover;
+    margin: 0;
+    padding: 0;
 }
 
 .card {
@@ -12,4 +14,11 @@
     justify-content: center;
     gap: 7px;
     text-decoration: none;
+    margin: 0;
+    padding: 0;
+}
+
+.card h3 {
+    margin: 0;
+    padding: 0;
 }

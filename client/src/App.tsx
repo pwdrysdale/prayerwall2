@@ -23,36 +23,46 @@ import FrontScreen from "./screens/GiveScreen/FrontScreen/FrontScreen";
 function App() {
     return (
         <Router>
-            <p>Prayer Wall 2!</p>
-
-            <p>App is up and change are made</p>
             <Navbar />
-            <Switch>
-                <Route exact path="/" component={FrontScreen} />
-                <Route path="/login" component={AuthScreen} exact />
-                <Route path="/prayer/add" component={AddPrayer} exact />
-                <Route path="/prayer/my" component={MyPrayers} exact />
-                <Route path="/prayer/public" component={PublicPrayers} exact />
-                <Route path="/prayer/edit/:id" component={EditPrayer} exact />
-                <Route
-                    path="/prayer/addcomment/:id"
-                    component={AddComment}
-                    exact
-                />
-                <Route
-                    path="/prayer/following"
-                    component={FollowingPrayers}
-                    exact
-                />
-                <Route path="/lists/my" component={MyLists} exact />
-                <Route path="/lists/add" component={AddList} exact />
-                <Route path="/lists/:id" component={List} exact />
-                <Route path="/user/following" component={Following} exact />
-                <Route path="/user/:id" component={User} exact />
-                <Route path="/give" component={GiveScreen} exact />
-            </Switch>
-            <Events />
-            <Toasts />
+            <div className="main-container">
+                <p>Prayer Wall 2!</p>
+
+                <p>App is up and change are made</p>
+                <Switch>
+                    <Route exact path="/" component={FrontScreen} />
+                    <Route path="/login" component={AuthScreen} exact />
+                    <Route path="/prayer/add" component={AddPrayer} exact />
+                    <Route path="/prayer/my" component={MyPrayers} exact />
+                    <Route
+                        path="/prayer/public"
+                        component={PublicPrayers}
+                        exact
+                    />
+                    <Route
+                        path="/prayer/edit/:id"
+                        component={EditPrayer}
+                        exact
+                    />
+                    <Route
+                        path="/prayer/addcomment/:id"
+                        component={AddComment}
+                        exact
+                    />
+                    <Route
+                        path="/prayer/following"
+                        component={FollowingPrayers}
+                        exact
+                    />
+                    <Route path="/lists/my" component={MyLists} exact />
+                    <Route path="/lists/add" component={AddList} exact />
+                    <Route path="/lists/:id" component={List} exact />
+                    <Route path="/user/following" component={Following} exact />
+                    <Route path="/user/:id" component={User} exact />
+                    <Route path="/give" component={GiveScreen} exact />
+                </Switch>
+                <Events />
+                <Toasts />
+            </div>
         </Router>
     );
 }

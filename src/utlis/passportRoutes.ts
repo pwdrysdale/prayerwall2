@@ -17,7 +17,7 @@ router.get(
     "/google/callback",
     passport.authenticate("google", {
         failureRedirect: "http://localhost:3000/login",
-        successRedirect: "http://localhost:3000",
+        successRedirect: "http://localhost:3000/login",
         session: true,
     })
 );
@@ -30,7 +30,7 @@ router.get(
     "/twitter/callback",
     passport.authenticate("twitter", {
         failureRedirect: "http://localhost:3000/login",
-        successRedirect: "http://localhost:3000",
+        successRedirect: "http://localhost:3000/login",
         session: true,
     })
 );
@@ -43,7 +43,7 @@ router.get(
     "/github/callback",
     passport.authenticate("github", {
         failureRedirect: "http://localhost:3000/login",
-        successRedirect: "http://localhost:3000",
+        successRedirect: "http://localhost:3000/login",
         session: true,
     })
 );

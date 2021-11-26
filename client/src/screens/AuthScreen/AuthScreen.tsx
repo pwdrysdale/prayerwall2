@@ -4,7 +4,8 @@ import Button from "../../components/HTML/Button";
 import { loader } from "graphql.macro";
 import Card from "../../components/UserCards/Card";
 import { userInfo } from "../../store/userInfo";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
+import { useToasts } from "../../store/useToasts";
 const Me = loader("./Me.graphql");
 
 const AuthScreen = () => {
@@ -25,20 +26,25 @@ const AuthScreen = () => {
 
     const logout: vf = (): void => {
         clearUser();
+        addToast({ message: "Logged out successfully", type: "success" });
         window.open("http://localhost:4000/auth/logout", "_self");
     };
 
     const { setUser, clearUser, user } = userInfo();
+    const { addToast } = useToasts();
 
     const { data: me, loading, error } = useQuery(Me);
 
     useEffect(() => {
         console.log(me);
+        if (me?.me && user !== me.me) {
+            addToast({ message: "Logged in", type: "success" });
+        }
         if (me && me.me) {
             setUser(me.me);
         }
         console.log("User: ", user);
-    }, [me, setUser, user]);
+    }, [me, setUser, user, addToast]);
 
     if (loading) return <div>Loading...</div>;
     if (error)
