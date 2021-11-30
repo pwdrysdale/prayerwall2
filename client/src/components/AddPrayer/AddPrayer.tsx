@@ -1,8 +1,17 @@
 import { useMutation, useQuery } from "@apollo/client";
-import React, { FormEvent, useCallback, useRef, useState } from "react";
+import React, {
+    FormEvent,
+    useCallback,
+    useEffect,
+    useRef,
+    useState,
+} from "react";
 
 import { loader } from "graphql.macro";
-import { PrayerCategory } from "../../types";
+
+import SearchPhotos from "../Photos/SearchPhotos";
+
+import { Photo, PrayerCategory } from "../../types";
 import { useToasts } from "../../store/useToasts";
 const GET_LISTS = loader("./GetLists.graphql");
 const AddPrayerMutation = loader("./AddPrayer.graphql");
@@ -16,6 +25,7 @@ const AddPrayer = () => {
     const answeredRef = useRef<HTMLInputElement>(null);
     const categoryRef = useRef<HTMLSelectElement>(null);
     const [selectedLists, setSelectedLists] = useState<number[]>([]);
+    const [selectedPhoto, setSelectedPhoto] = useState<Partial<Photo>>({});
 
     const { addToast } = useToasts();
 
@@ -47,6 +57,7 @@ const AddPrayer = () => {
     const onSubmit = useCallback(
         (event: FormEvent<HTMLFormElement>) => {
             event.preventDefault();
+            console.log(selectedPhoto);
             if (
                 bodyRef.current &&
                 titleRef.current &&
@@ -63,12 +74,13 @@ const AddPrayer = () => {
                             answered: answeredRef.current.checked,
                             category: parseFloat(categoryRef.current.value),
                             lists: selectedLists,
+                            photo: JSON.stringify(selectedPhoto),
                         },
                     },
                 });
             }
         },
-        [addPrayer, selectedLists]
+        [addPrayer, selectedLists, selectedPhoto]
     );
 
     if (listLoading) return <div>Loading...</div>;
@@ -77,7 +89,7 @@ const AddPrayer = () => {
 
     return (
         <div>
-            <h1>Add a prayer here</h1>
+            <h1>Add A Prayer</h1>
             <form onSubmit={onSubmit}>
                 <div className="form-group">
                     <label htmlFor="title">Title:</label>
@@ -120,12 +132,16 @@ const AddPrayer = () => {
                             })}
                     </select>
                 </div>
+                <SearchPhotos
+                    selectedPhoto={selectedPhoto}
+                    setSelectedPhoto={setSelectedPhoto}
+                />
                 {lists.myLists?.length > 0 ? (
                     <div>
                         <h3>Select the lists you want to add this prayer to</h3>
                         {lists.myLists.map((list: any) => {
                             return (
-                                <div>
+                                <div key={list.id}>
                                     <input
                                         type="checkbox"
                                         id={list.id}

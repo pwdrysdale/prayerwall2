@@ -14,7 +14,7 @@ import { Following } from "./Following";
 import { List } from "./List";
 import { Prayer } from "./Prayer";
 import { PrayerComments } from "./PrayerComments";
-import { PrayerPrayeredBy } from "./PrayerPrayedBy";
+import { PrayerPrayedBy } from "./PrayerPrayedBy";
 
 export enum UserRole {
     loggedIn = "loggedIn",
@@ -65,11 +65,11 @@ export class User extends BaseEntity {
     @Field(() => [PrayerComments])
     comments: PrayerComments[];
 
-    @OneToMany(() => PrayerPrayeredBy, (prayedBy) => prayedBy.user, {
+    @OneToMany(() => PrayerPrayedBy, (prayedBy) => prayedBy.user, {
         nullable: true,
     })
-    @Field(() => [PrayerPrayeredBy])
-    prayedBy: [PrayerPrayeredBy] | null;
+    @Field(() => [PrayerPrayedBy])
+    prayedBy: [PrayerPrayedBy] | null;
 
     @Field()
     @Column()

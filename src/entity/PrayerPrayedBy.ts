@@ -11,7 +11,7 @@ import { User } from "./User";
 
 @ObjectType()
 @Entity()
-export class PrayerPrayeredBy extends BaseEntity {
+export class PrayerPrayedBy extends BaseEntity {
     @Field()
     @PrimaryGeneratedColumn()
     id: number;

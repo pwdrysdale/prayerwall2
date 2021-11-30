@@ -20,9 +20,11 @@ import { EditPrayerInput } from "./inputs/EditPrayerInput";
 import { PrayerComments } from "../../entity/PrayerComments";
 import { PrayerCommentInput } from "./inputs/PrayerCommentInput";
 import { PubSubEngine } from "graphql-subscriptions";
-import { PrayerPrayeredBy } from "../../entity/PrayerPrayedBy";
+import { PrayerPrayedBy } from "../../entity/PrayerPrayedBy";
 import { Following } from "../../entity/Following";
 import { List } from "../../entity/List";
+import { Photo } from "../Unsplash/PhotoTypes";
+import { PhotoObject } from "../../entity/Photo";
 
 @Resolver(Prayer)
 export class PrayerResolver {
@@ -32,8 +34,8 @@ export class PrayerResolver {
         @Ctx() { req }: AppContext
     ): Promise<number | null> {
         if (!req.user) return null;
-        const prayedBy = await PrayerPrayeredBy.find({
-            where: { prayerId: prayer.id, userId: req.user.id },
+        const prayedBy = await PrayerPrayedBy.find({
+            where: { prayer: prayer.id, user: req.user.id },
         });
         return prayedBy.length;
     }
@@ -170,11 +172,12 @@ export class PrayerResolver {
     @Mutation(() => Prayer)
     async addPrayer(
         @Arg("PrayerInput")
-        { title, body, category, answered, privat, lists }: PrayerInput,
+        { title, body, category, answered, privat, lists, photo }: PrayerInput,
         @Ctx() { req }: AppContext,
         @PubSub() pubSub: PubSubEngine
     ): Promise<Prayer | null> {
         try {
+            console.log("Photo: ", JSON.parse(photo));
             if (!req.user) {
                 return null;
             }
@@ -182,8 +185,6 @@ export class PrayerResolver {
             const l = await (
                 await List.findByIds(lists, { relations: ["owner"] })
             ).filter((ls) => ls.owner.id === req.user.id);
-
-            console.log(l);
 
             const p = await Prayer.create({
                 title,
@@ -193,6 +194,7 @@ export class PrayerResolver {
                 category,
                 user: req.user,
                 lists: l,
+                photo: JSON.parse(photo),
             }).save();
 
             if (!privat) {
@@ -360,7 +362,7 @@ export class PrayerResolver {
             const prayer: Prayer = await Prayer.findOne(id);
             const user: User = await User.findOne(req.user.id);
 
-            await PrayerPrayeredBy.create({
+            await PrayerPrayedBy.create({
                 prayer,
                 user,
             }).save();

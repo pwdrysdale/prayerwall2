@@ -18,10 +18,12 @@
         "@types/express": "^4.17.13",
         "@types/express-session": "^1.17.4",
         "@types/node": "^8.0.29",
+        "@types/node-fetch": "^3.0.3",
         "@types/passport": "^1.0.7",
         "@types/passport-github": "^1.1.6",
         "@types/passport-google-oauth20": "^2.0.10",
         "@types/stripe": "^8.0.417",
+        "@types/unsplash-js": "^7.0.0",
         "concurrently": "^6.3.0",
         "nodemon": "^2.0.13",
         "ts-node": "3.3.0",
@@ -32,6 +34,7 @@
         "@graphql-tools/schema": "^8.3.0",
         "apollo-server": "^3.4.0",
         "apollo-server-express": "^3.4.0",
+        "babel-register": "^6.26.0",
         "class-validator": "^0.13.1",
         "cors": "^2.8.5",
         "date-fns": "^2.25.0",
@@ -39,6 +42,7 @@
         "express": "^4.17.1",
         "express-session": "^1.17.2",
         "graphql": "^15.6.1",
+        "node-fetch": "^3.1.0",
         "passport": "^0.5.0",
         "passport-github": "^1.1.0",
         "passport-google-oauth20": "^2.0.0",
@@ -48,6 +52,7 @@
         "stripe": "^8.184.0",
         "subscriptions-transport-ws": "^0.9.19",
         "type-graphql": "^1.1.1",
-        "typeorm": "0.2.32"
+        "typeorm": "0.2.32",
+        "unsplash-js": "^7.0.15"
     }
 }

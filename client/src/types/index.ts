@@ -4,3 +4,4 @@ export * from "./userTypes";
 export * from "./prayedByTypes";
 export * from "./followingTypes";
 export * from "./listTypes";
+export * from "./photoTypes";

@@ -14,8 +14,10 @@ import {
 } from "typeorm";
 import { List } from "./List";
 import { PrayerComments } from "./PrayerComments";
-import { PrayerPrayeredBy } from "./PrayerPrayedBy";
+import { PrayerPrayedBy } from "./PrayerPrayedBy";
 import { User } from "./User";
+import { Photo } from "../modules/Unsplash/PhotoTypes";
+import { PhotoObject } from "./Photo";
 
 export enum PrayerCategory {
     "thanks",
@@ -54,6 +56,10 @@ export class Prayer extends BaseEntity {
     @Column({ default: false })
     featured?: boolean;
 
+    @Field(() => PhotoObject, { nullable: true })
+    @Column("jsonb", { nullable: true })
+    photo?: Photo;
+
     @Field(() => User)
     @ManyToOne(() => User)
     user: User;
@@ -62,9 +68,9 @@ export class Prayer extends BaseEntity {
     @OneToMany(() => PrayerComments, (comments) => comments.prayer)
     comments: [PrayerComments];
 
-    @Field(() => [PrayerPrayeredBy], { nullable: true })
-    @OneToMany(() => PrayerPrayeredBy, (prayedBy) => prayedBy.prayer)
-    prayedBy: [PrayerPrayeredBy];
+    @Field(() => [PrayerPrayedBy], { nullable: true })
+    @OneToMany(() => PrayerPrayedBy, (prayedBy) => prayedBy.prayer)
+    prayedBy: [PrayerPrayedBy];
 
     @Field(() => [List], { defaultValue: [] })
     @ManyToMany(() => List, (list) => list.prayers)

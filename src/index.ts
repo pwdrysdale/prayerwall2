@@ -15,12 +15,13 @@ import { createServer } from "http";
 import { execute, subscribe } from "graphql";
 import { SubscriptionServer } from "subscriptions-transport-ws";
 
-import stripeRoutes from "./utlis/stripe/stripe";
 import passportRoutes from "./utlis/passportRoutes";
+import unsplashRoutes from "./modules/Unsplash/routes";
+
+import stripeRoutes from "./utlis/stripe/stripe";
 import { PrayerResolver } from "./modules/Prayers/PrayerResolver";
 import { EventsSubscription } from "./modules/EventsSub/EventsSubscription";
 import { ListResolver } from "./modules/List/ListResolver";
-import { ListExtensionResolver } from "./modules/List/ListExtensionResolver";
 
 const startUp = async () => {
     try {
@@ -78,6 +79,7 @@ const startUp = async () => {
         app.use(cors(corsOptions));
         // app.use(cors());
         app.use("/stripe", stripeRoutes);
+        app.use("/unsplash", unsplashRoutes);
 
         const httpServer = createServer(app);
         httpServer.listen({ port: 4000 }, () => {
@@ -91,6 +93,7 @@ const startUp = async () => {
                 ListResolver,
                 // ListExtensionResolver,
                 EventsSubscription,
+                // UnsplashResolver,
             ],
             authChecker,
         });
