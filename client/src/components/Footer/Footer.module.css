@@ -1,0 +1,21 @@
+.footer {
+    width: 100%;
+    background-color: var(--bg-color);
+    position: relative;
+    color: white;
+    bottom: 0;
+    padding: 3rem;
+}
+
+.footer h3 {
+    margin-bottom: 3rem;
+}
+
+.columns {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.columns p {
+    font-weight: bold;
+}

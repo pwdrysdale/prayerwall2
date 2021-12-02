@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { RouteComponentProps, Redirect } from "react-router-dom";
 import { loader } from "graphql.macro";
 import { useMutation, useQuery } from "@apollo/client";

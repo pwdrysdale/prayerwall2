@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { FormEvent, FormEventHandler, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Photo } from "../../types";
 
 interface PhotoSearchProps {
@@ -56,7 +56,7 @@ const SearchPhotos: React.FC<PhotoSearchProps> = ({
             getPhotos();
         }
         return;
-    }, [apikey, page]);
+    }, [apikey, page, searchTerm, getApiKey, getPhotos]);
 
     return (
         <div>

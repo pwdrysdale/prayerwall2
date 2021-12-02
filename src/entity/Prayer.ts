@@ -56,9 +56,9 @@ export class Prayer extends BaseEntity {
     @Column({ default: false })
     featured?: boolean;
 
-    @Field(() => PhotoObject, { nullable: true })
-    @Column("jsonb", { nullable: true })
-    photo?: Photo;
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    photo?: string;
 
     @Field(() => User)
     @ManyToOne(() => User)

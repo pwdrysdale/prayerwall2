@@ -1,4 +1,4 @@
-import { Following } from ".";
+import { Following, List } from ".";
 import { Prayer } from ".";
 
 export interface User {
@@ -8,4 +8,5 @@ export interface User {
     createdFollows: [Following];
     followingMe: [Following];
     prayers: [Prayer];
+    lists: [List];
 }

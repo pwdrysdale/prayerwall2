@@ -19,4 +19,5 @@ export interface Prayer {
     prayedBy?: [PrayedBy];
     prayedByUser: number;
     createdDate: Date;
+    photo?: string;
 }

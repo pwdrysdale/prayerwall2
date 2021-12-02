@@ -1,11 +1,5 @@
 import { useMutation, useQuery } from "@apollo/client";
-import React, {
-    FormEvent,
-    useCallback,
-    useEffect,
-    useRef,
-    useState,
-} from "react";
+import React, { FormEvent, useCallback, useRef, useState } from "react";
 
 import { loader } from "graphql.macro";
 

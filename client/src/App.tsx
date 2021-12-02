@@ -1,10 +1,11 @@
+import { useEffect } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import AddComment from "./components/AddComment.tsx/AddComment";
 import AddList from "./components/AddList.tsx/AddList";
 
 import AddPrayer from "./components/AddPrayer/AddPrayer";
 import EditPrayer from "./components/EditPrayer/EditPrayer";
-import Events from "./components/Events/Events";
+// import Events from "./components/Events/Events";
 import Following from "./components/Following/Following";
 import FollowingPrayers from "./components/FollowingPrayers/FollowingPrayers";
 import MyLists from "./components/MyLists/MyLists";
@@ -19,15 +20,36 @@ import GiveScreen from "./screens/GiveScreen/GiveScreen";
 import "./GlobalStyles.css";
 import List from "./components/List/List";
 import FrontScreen from "./screens/GiveScreen/FrontScreen/FrontScreen";
+import { userInfo } from "./store/userInfo";
+import { useQuery } from "@apollo/client";
+import { useToasts } from "./store/useToasts";
+import { loader } from "graphql.macro";
+import Footer from "./components/Footer/Footer";
+
+const Me = loader("./screens/AuthScreen/Me.graphql");
 
 function App() {
+    const { setUser, user } = userInfo();
+    const { addToast } = useToasts();
+
+    const { data: me } = useQuery(Me);
+
+    useEffect(() => {
+        console.log(me);
+        if (me?.me && user !== me.me) {
+            addToast({ message: "Logged in", type: "success" });
+        }
+        if (me && me.me) {
+            setUser(me.me);
+        }
+        console.log("User: ", user);
+    }, [me, setUser, user, addToast]);
+
     return (
         <Router>
-            <Navbar />
             <div className="main-container">
-                <p>Prayer Wall 2!</p>
+                <Navbar />
 
-                <p>App is up and change are made</p>
                 <Switch>
                     <Route exact path="/" component={FrontScreen} />
                     <Route path="/login" component={AuthScreen} exact />
@@ -60,9 +82,9 @@ function App() {
                     <Route path="/user/:id" component={User} exact />
                     <Route path="/give" component={GiveScreen} exact />
                 </Switch>
-                <Events />
-                <Toasts />
             </div>
+            <Footer />
+            <Toasts />
         </Router>
     );
 }

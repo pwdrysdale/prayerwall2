@@ -1,40 +1,27 @@
-import { FormEvent, useState } from "react";
 import { useToasts, Toast } from "../../store/useToasts";
+import { IoClose } from "react-icons/io5";
+
+import styles from "./ToastStyle.module.css";
 
 const Toasts = () => {
-    const [toast, setToast] = useState("");
+    const { removeToast, toasts } = useToasts();
 
-    const { addToast, removeToast, toasts } = useToasts();
-
-    const onSubmit = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        addToast({ message: toast, type: "success" });
-        setToast("");
-    };
     return (
-        <div>
-            <h1>Toasts</h1>
+        <div className={styles.wrapper}>
             {toasts.map((toast: Toast) => (
-                <div key={toast.id}>
-                    <div>{toast.message}</div>
-                    <div
+                <div
+                    key={toast.id}
+                    className={`${styles.box} ${styles[toast.type]}`}
+                >
+                    <p>{toast.message}</p>
+                    <IoClose
+                        className={styles.close}
                         onClick={() => {
                             removeToast(toast.id);
                         }}
-                    >
-                        Remove toast
-                    </div>
+                    />
                 </div>
             ))}
-            <form onSubmit={onSubmit}>
-                <label htmlFor="toast">Add Toast: </label>
-                <input
-                    type="text"
-                    id="toast"
-                    value={toast}
-                    onChange={(e) => setToast(e.target.value)}
-                />
-            </form>
         </div>
     );
 };

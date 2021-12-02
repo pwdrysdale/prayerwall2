@@ -77,6 +77,12 @@ const MyPrayers = () => {
                     <div key={idx}>
                         <h1>{P.title}</h1>
                         <div>{P.body}</div>
+                        {P.photo && (
+                            <img
+                                src={JSON.parse(P.photo).urls.small}
+                                alt="Prayer"
+                            />
+                        )}
                         <div>{P.privat ? "Private" : "Public"}</div>
                         <div>{PrayerCategory[P.category]}</div>
                         <div>
@@ -87,6 +93,7 @@ const MyPrayers = () => {
                                 ? P.prayedBy.length
                                 : "No one prayed yet"}
                         </div>
+
                         <Button
                             onClick={() => {
                                 deletePrayer({
