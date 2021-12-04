@@ -6,6 +6,7 @@ import { useQuery } from "@apollo/client";
 import Button from "../HTML/Button";
 import { useToasts } from "../../store/useToasts";
 import RenderPrayer from "../RenderPrayer/RenderPrayer";
+import styles from "./publicPrayerStyles.module.css";
 const publicPrayers = loader("./PublicPrayers.graphql");
 
 const PublicPrayers = () => {
@@ -43,24 +44,24 @@ const PublicPrayers = () => {
     return (
         <div>
             <h1>Public Prayers</h1>
-            <div>
+            <div className={styles.prayerContainer}>
                 {data.publicPrayers.map((P: Prayer, idx: number) => (
                     <div key={idx}>
                         <RenderPrayer prayer={P} me={data.me} />
                     </div>
                 ))}
-                <Button
-                    title="Next"
-                    onClick={() => {
-                        const cursor: string =
-                            data.publicPrayers[data.publicPrayers.length - 1]
-                                .createdDate;
-                        refetch({
-                            cursor,
-                        });
-                    }}
-                />
             </div>
+            <Button
+                title="Next"
+                onClick={() => {
+                    const cursor: string =
+                        data.publicPrayers[data.publicPrayers.length - 1]
+                            .createdDate;
+                    refetch({
+                        cursor,
+                    });
+                }}
+            />
         </div>
     );
 };

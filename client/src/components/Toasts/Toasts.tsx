@@ -11,7 +11,13 @@ const Toasts = () => {
             {toasts.map((toast: Toast) => (
                 <div
                     key={toast.id}
-                    className={`${styles.box} ${styles[toast.type]}`}
+                    className={`${styles.box} ${
+                        toast.type === "success"
+                            ? "greenBgText"
+                            : toast.type === "error"
+                            ? "redBgText"
+                            : "blueBgText"
+                    }`}
                 >
                     <p>{toast.message}</p>
                     <IoClose

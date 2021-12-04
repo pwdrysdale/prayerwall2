@@ -49,7 +49,7 @@ export class PrayerResolver {
     ): Promise<Prayer[] | null> {
         try {
             const options: FindManyOptions<Prayer> = {
-                take: 2,
+                take: 6,
                 order: { createdDate: "DESC" },
                 where: { privat: false },
                 relations: ["user", "comments", "prayedBy", "prayedBy.user"],

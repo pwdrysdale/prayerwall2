@@ -1,19 +1,22 @@
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap");
 
 * {
     box-sizing: border-box;
-    font-family: "Cormorant Garamond", serif;
+    font-family: "Helvetica Neue", "Open Sans", "Cormorant Garamond", serif;
     margin: 0;
     padding: 0;
-    --bg-color: #2b3c59;
     --pink-red: #ea6069;
+    --crimson: #710627;
+    --peach: #faaa8d;
+    --beige: #feefdd;
+    --navy: #0a2463;
 }
 
 @media (prefers-color-scheme: dark) {
     body {
         /* background-color: var(--bg-color);
         color: white; */
-        background-color: rgb(214, 214, 214);
+        /* background-color: rgb(214, 214, 214); */
     }
 }
 
@@ -25,13 +28,46 @@ a {
 .main-container {
     display: flex;
     flex-direction: column;
-    margin: 4.25rem auto 0 auto;
+    margin: 156px auto 0 auto;
     min-height: 100vh;
-    overflow: hidden;
-    padding: 0.75rem;
-    width: 100%;
+    width: 1384px;
 }
 
 .card {
-    border-radius: 0.5rem;
+    border-radius: 50px;
+}
+
+.greenBgText {
+    color: white;
+    background-color: #2a801c;
+}
+
+.redBgText {
+    color: white;
+    background-color: #d41919;
+}
+
+.blueBgText {
+    color: white;
+    background-color: #00bbe6;
+}
+
+.bgPinkRed {
+    background: var(--pink-red);
+}
+
+.bgCrimson {
+    background: var(--crimson);
+}
+
+.bgPeach {
+    background: var(--peach);
+}
+
+.bgBeige {
+    background: var(--beige);
+}
+
+.bgNavy {
+    background: var(--navy);
 }

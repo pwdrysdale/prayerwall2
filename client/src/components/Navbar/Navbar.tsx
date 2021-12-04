@@ -1,14 +1,16 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { IoMenuOutline } from "react-icons/io5";
 
 import { userInfo } from "../../store/userInfo";
-import Card from "../UserCards/Card";
+import ProfileImage from "../UserCards/ProfileImage";
 
 import styles from "./navstyles.module.css";
 
 const Navbar = () => {
     const [hidden, setHidden] = React.useState(false);
     const [y, setY] = React.useState(window.scrollY);
+    const [showMenuItems, setShowMenuItems] = React.useState(false);
 
     const { user } = userInfo();
 
@@ -33,50 +35,59 @@ const Navbar = () => {
             </Link>
             <div className={styles.right}>
                 {user.username && (
-                    <Card
-                        img={user.image}
-                        username={user.username || "Anonymous User"}
-                        role={user.role || "Not logged in"}
+                    <ProfileImage
+                        src={user.image || "https://i.imgur.com/X2JkUZT.png"}
+                        alt={user.username || "Anonymous User"}
                     />
                 )}
-                <ul>
-                    {user.id ? (
-                        <>
-                            <Link to="/prayer/add">
-                                <li>Add Prayer</li>
-                            </Link>
-                            <Link to="/prayer/my">
-                                <li>My Prayers</li>
-                            </Link>
-                            <Link to="/user/following">
-                                <li>Following</li>
-                            </Link>
-                            <Link to="/prayer/following">
-                                <li>Following Prayers</li>
-                            </Link>
-                            <Link to="/lists/my">
-                                <li>My Lists</li>
-                            </Link>
-                            <Link to="/lists/add">
-                                <li>Add A List</li>
-                            </Link>
-                        </>
-                    ) : (
-                        <>
-                            <Link to="/login">
-                                <li>Login</li>
-                            </Link>
-                        </>
-                    )}
+                <IoMenuOutline
+                    className={styles.hamburger}
+                    onMouseEnter={() => setShowMenuItems(true)}
+                    onMouseLeave={() => setShowMenuItems(false)}
+                />
+                {showMenuItems && (
+                    <ul
+                        onMouseLeave={() => setShowMenuItems(false)}
+                        onMouseEnter={() => setShowMenuItems(true)}
+                    >
+                        {user.id ? (
+                            <>
+                                <Link to="/prayer/add">
+                                    <li>Add Prayer</li>
+                                </Link>
+                                <Link to="/prayer/my">
+                                    <li>My Prayers</li>
+                                </Link>
+                                <Link to="/user/following">
+                                    <li>Following</li>
+                                </Link>
+                                <Link to="/prayer/following">
+                                    <li>Following Prayers</li>
+                                </Link>
+                                <Link to="/lists/my">
+                                    <li>My Lists</li>
+                                </Link>
+                                <Link to="/lists/add">
+                                    <li>Add A List</li>
+                                </Link>
+                            </>
+                        ) : (
+                            <>
+                                <Link to="/login">
+                                    <li>Login</li>
+                                </Link>
+                            </>
+                        )}
 
-                    <Link to="/prayer/public">
-                        <li>Public Prayers</li>
-                    </Link>
+                        <Link to="/prayer/public">
+                            <li>Public Prayers</li>
+                        </Link>
 
-                    <Link to="/give">
-                        <li>Give</li>
-                    </Link>
-                </ul>
+                        <Link to="/give">
+                            <li>Give</li>
+                        </Link>
+                    </ul>
+                )}
             </div>
         </div>
     );

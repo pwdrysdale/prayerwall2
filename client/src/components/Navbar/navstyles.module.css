@@ -1,18 +1,28 @@
 .navbar {
     position: fixed;
-    top: 0.75rem;
-    left: 0.75rem;
-    right: 0.75rem;
+    top: 28px;
+    left: auto;
+    right: 50%;
+    left: 50%;
+    z-index: 1;
+    margin-left: -692px;
     background-color: white;
     opacity: 1;
     backdrop-filter: blur(5px);
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 0 1rem;
+    padding: 0 3rem;
     transition: all 0.5s ease-in-out;
-    border-radius: 0.5rem;
+    border-radius: 50px;
+    height: 100px;
+    width: 1384px;
     user-select: none;
+    box-shadow: 0px 6px 63px rgba(0, 0, 0, 0.13),
+        0px 2.31855px 27.0217px rgba(0, 0, 0, 0.114978),
+        0px 1.09891px 12.891px rgba(0, 0, 0, 0.0616704),
+        0px 0.499221px 5.16546px rgba(0, 0, 0, 0.019713),
+        0px 0.175691px 1.20332px rgba(0, 0, 0, 0.00502724);
 }
 
 .navbar_hide {
@@ -24,28 +34,43 @@
     display: flex;
     flex-direction: row;
     background-color: white;
+    position: relative;
+}
+
+.hamburger {
+    height: 50px;
+    width: 50px;
+    margin-left: 20px;
 }
 
 .navbar ul {
     list-style-type: none;
-    display: flex;
-    flex-direction: row;
-    margin-left: 1rem;
-    align-items: stretch;
+    /* display: flex;
+    flex-direction: column; */
     /* justify-content: center; */
+    border-radius: 50px;
     background-color: white;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    overflow: hidden;
+    padding: 2rem 0;
+    width: max-content;
+    box-shadow: 0px 6px 63px rgba(0, 0, 0, 0.13),
+        0px 2.31855px 27.0217px rgba(0, 0, 0, 0.114978),
+        0px 1.09891px 12.891px rgba(0, 0, 0, 0.0616704),
+        0px 0.499221px 5.16546px rgba(0, 0, 0, 0.019713),
+        0px 0.175691px 1.20332px rgba(0, 0, 0, 0.00502724);
 }
 
 .navbar ul li {
-    padding: 1rem;
+    padding: 1rem 50px;
     height: 100%;
-    text-align: center;
-    justify-items: center;
-    display: flex;
-    align-items: center;
+    width: 100%;
+    text-align: right;
 }
 
 .navbar ul li:hover {
-    background-color: var(--bg-color);
+    background-color: var(--pink-red);
     color: white;
 }

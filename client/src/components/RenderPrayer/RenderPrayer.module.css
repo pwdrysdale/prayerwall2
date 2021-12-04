@@ -1,32 +1,118 @@
 .card {
     display: flex;
+    position: relative;
     flex-direction: column;
+    justify-content: flex-end;
     background-color: white;
+    width: 424px;
+    height: 714px;
     padding: 0;
     overflow: hidden;
-    margin-bottom: 0.75rem;
-}
-
-.vis_detail {
-    display: flex;
-    flex-direction: row;
-    gap: 40px;
-}
-
-.cardImage {
-    width: 100%;
-    height: auto;
-    max-height: 75vh;
-    object-fit: cover;
-    flex: 1;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    box-shadow: 0px 6px 63px rgba(0, 0, 0, 0.13),
+        0px 2.31855px 27.0217px rgba(0, 0, 0, 0.114978),
+        0px 1.09891px 12.891px rgba(0, 0, 0, 0.0616704),
+        0px 0.499221px 5.16546px rgba(0, 0, 0, 0.019713),
+        0px 0.175691px 1.20332px rgba(0, 0, 0, 0.00502724);
 }
 
 .cardMain {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    background: white;
+    border-radius: 50px;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+}
+
+.cardMain p {
+    max-height: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    transition: max-height 1s ease-in-out;
+}
+
+.cardMain:hover p {
+    max-height: 1000px;
+    -webkit-line-clamp: 22;
 }
 
 .cardTextDetail {
     flex: 1;
-    padding: 10rem;
+    padding: 1rem 1rem 0.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    justify-content: space-around;
+    gap: 0.5rem;
+    height: 100%;
+}
+
+.prayerName {
+    width: 100%;
+    text-align: center;
+}
+
+.typePill {
+    padding: 0.2rem 0.7rem;
+    width: max-content;
+    border-radius: 5px;
+}
+
+.buttonGroup {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1rem 2rem;
+}
+
+.iconGroup {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.iconButton {
+    cursor: pointer;
+    height: 40px;
+    width: 40px;
+}
+
+.menu {
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background: var(--navy);
+    color: white;
+    padding: 3rem 2rem;
+}
+
+.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header h3 {
+    font-size: 1.5rem;
+}
+
+.icon {
+    height: 30px;
+    width: 30px;
+    cursor: pointer;
+}
+
+.icon:hover {
+    color: var(--pink-red);
 }

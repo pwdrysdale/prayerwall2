@@ -1,6 +1,7 @@
 .footer {
     width: 100%;
-    background-color: var(--bg-color);
+    background-image: linear-gradient(to right, var(--crimson), var(--navy));
+    border-top: 0.5rem solid var(--peach);
     position: relative;
     color: white;
     bottom: 0;
