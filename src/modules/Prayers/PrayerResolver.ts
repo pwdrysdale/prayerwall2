@@ -23,8 +23,6 @@ import { PubSubEngine } from "graphql-subscriptions";
 import { PrayerPrayedBy } from "../../entity/PrayerPrayedBy";
 import { Following } from "../../entity/Following";
 import { List } from "../../entity/List";
-import { Photo } from "../Unsplash/PhotoTypes";
-import { PhotoObject } from "../../entity/Photo";
 
 @Resolver(Prayer)
 export class PrayerResolver {

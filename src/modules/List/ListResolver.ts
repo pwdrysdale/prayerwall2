@@ -11,7 +11,7 @@ import { List } from "../../entity/List";
 import { Prayer } from "../../entity/Prayer";
 import { User } from "../../entity/User";
 import { AppContext } from "../../utlis/context";
-import { AddPrayerToListInputs } from "../Prayers/inputs/AddPrayerToListInputs";
+import { AddRemovePrayerToListInputs } from "../Prayers/inputs/AddPrayerToListInputs";
 import { ListInput } from "./inputs/ListInput";
 
 @Resolver()
@@ -41,7 +41,6 @@ export class ListResolver {
             const list = await List.findOne(id, {
                 relations: ["owner", "prayers", "prayers.user"],
             });
-            console.log(list.owner);
             if (list.owner.id === req.user.id || list.privat !== true) {
                 return list;
             }
@@ -73,8 +72,8 @@ export class ListResolver {
     @Mutation(() => List, { nullable: true })
     async addToList(
         @Ctx() { req }: AppContext,
-        @Arg("AddPrayerToListInputs")
-        { prayerId, listId }: AddPrayerToListInputs
+        @Arg("AddRemovePrayerToListInputs")
+        { prayerId, listId }: AddRemovePrayerToListInputs
     ): Promise<List | null> {
         try {
             const list = await List.findOne(listId, {
@@ -86,8 +85,38 @@ export class ListResolver {
             const prayer = await Prayer.findOne(prayerId);
             if (list && prayer) {
                 list.prayers.push(prayer);
-                console.log(list);
+                // console.log(list);
                 await list.save();
+                return list;
+            }
+            return null;
+        } catch (err) {
+            console.log(err);
+            return null;
+        }
+    }
+
+    @Mutation(() => List, { nullable: true })
+    async removeFromList(
+        @Ctx() { req }: AppContext,
+        @Arg("AddRemovePrayerToListInputs")
+        { prayerId, listId }: AddRemovePrayerToListInputs
+    ): Promise<List | null> {
+        try {
+            const list = await List.findOne(listId, {
+                relations: ["owner", "prayers"],
+            });
+            if (list.owner.id !== req.user.id) {
+                console.log("not the same guy?");
+                return null;
+            }
+            const prayer = await Prayer.findOne(prayerId, {
+                relations: ["lists"],
+            });
+            if (list && prayer) {
+                list.prayers = list.prayers.filter((p) => p.id !== prayerId);
+                await list.save();
+
                 return list;
             }
             return null;

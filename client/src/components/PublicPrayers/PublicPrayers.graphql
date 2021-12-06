@@ -36,6 +36,9 @@ query Query($cursor: String) {
         lists {
             id
             name
+            prayers {
+                id
+            }
         }
     }
 }

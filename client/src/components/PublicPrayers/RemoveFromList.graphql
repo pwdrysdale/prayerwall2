@@ -1,5 +1,5 @@
 mutation Mutation($addRemovePrayerToListInputs: AddRemovePrayerToListInputs!) {
-    addToList(AddRemovePrayerToListInputs: $addRemovePrayerToListInputs) {
+    removeFromList(AddRemovePrayerToListInputs: $addRemovePrayerToListInputs) {
         id
     }
 }

@@ -4,5 +4,9 @@ query Query {
         username
         role
         image
+        lists {
+            id
+            name
+        }
     }
 }

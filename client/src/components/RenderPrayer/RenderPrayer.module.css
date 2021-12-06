@@ -26,18 +26,35 @@
     flex-direction: column;
 }
 
-.cardMain p {
-    max-height: 160px;
+.cardMain input {
+    opacity: 0;
+}
+
+@-webkit-keyframes fadeIn {
+    from {
+        height: 160px;
+    }
+    to {
+        height: 400px;
+    }
+}
+
+.cardMainLabel p {
+    max-height: 90px;
+    min-height: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-line-clamp: 5;
     -webkit-box-orient: vertical;
-    transition: max-height 1s ease-in-out;
+    transition: all 1s ease-in-out;
+    height: calc(100%+1px);
 }
 
-.cardMain:hover p {
-    max-height: 1000px;
+.cardMainLabelChecked p {
+    height: calc(100%+1px);
+    /* display: -webkit-box; */
+    max-height: 395px;
     -webkit-line-clamp: 22;
 }
 
@@ -115,4 +132,25 @@
 
 .icon:hover {
     color: var(--pink-red);
+}
+
+.actionStep {
+    margin-left: auto;
+    text-align: end;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    cursor: pointer;
+}
+
+.actionStep:hover {
+    color: var(--pink-red);
+}
+
+.actionIcon {
+    height: 20px;
+    width: 20px;
+    cursor: pointer;
+    margin: 0.25rem;
 }

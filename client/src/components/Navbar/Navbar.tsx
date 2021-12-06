@@ -6,13 +6,16 @@ import { userInfo } from "../../store/userInfo";
 import ProfileImage from "../UserCards/ProfileImage";
 
 import styles from "./navstyles.module.css";
+import { useToasts } from "../../store/useToasts";
 
 const Navbar = () => {
     const [hidden, setHidden] = React.useState(false);
     const [y, setY] = React.useState(window.scrollY);
     const [showMenuItems, setShowMenuItems] = React.useState(false);
 
-    const { user } = userInfo();
+    const { user, clearUser } = userInfo();
+
+    const { addToast } = useToasts();
 
     useEffect(() => {
         window.addEventListener("scroll", () => {
@@ -27,6 +30,12 @@ const Navbar = () => {
             setY(scroll);
         });
     }, [y]);
+
+    const logout = (): void => {
+        clearUser();
+        addToast({ message: "Logged out successfully", type: "success" });
+        window.open("http://localhost:4000/auth/logout", "_self");
+    };
 
     return (
         <div className={`${styles.navbar} ${hidden && styles.navbar_hide}`}>
@@ -70,6 +79,7 @@ const Navbar = () => {
                                 <Link to="/lists/add">
                                     <li>Add A List</li>
                                 </Link>
+                                <li onClick={logout}>Log out</li>
                             </>
                         ) : (
                             <>

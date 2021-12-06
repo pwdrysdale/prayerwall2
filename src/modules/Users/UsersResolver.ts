@@ -45,6 +45,7 @@ export class UserResolver {
                     "createdFollows",
                     "createdFollows.followingId",
                     "lists",
+                    "lists.prayers",
                 ],
             });
             return user;
