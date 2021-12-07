@@ -1,4 +1,13 @@
-import React from "react";
+import {
+    useRef,
+    useCallback,
+    MutableRefObject,
+    useState,
+    useEffect,
+    useMemo,
+    LegacyRef,
+} from "react";
+import { useInView } from "react-intersection-observer";
 
 import { loader } from "graphql.macro";
 import { Prayer } from "../../types";
@@ -7,25 +16,50 @@ import Button from "../HTML/Button";
 import { useToasts } from "../../store/useToasts";
 import RenderPrayer from "../RenderPrayer/RenderPrayer";
 import styles from "./publicPrayerStyles.module.css";
+import { format } from "date-fns";
+
 const publicPrayers = loader("./PublicPrayers.graphql");
 
 const PublicPrayers = () => {
+    const [prayers, setPrayers] = useState<Prayer[]>([]);
+    const [fullUser, setFullUser] = useState<any>(null);
+    const [lastFetch, setLastFetch] = useState<Prayer[]>([]);
+
     const { addToast } = useToasts();
 
-    const { data, loading, error, refetch } = useQuery(publicPrayers, {
+    const { ref, inView } = useInView();
+
+    const { loading, error, refetch } = useQuery(publicPrayers, {
         errorPolicy: "all",
         variables: { cursor: "" },
+        onCompleted: (data) => {
+            setLastFetch([...(data.publicPrayers as Prayer[])]);
+            setPrayers([...prayers, ...(data.publicPrayers as Prayer[])]);
+            setFullUser(data.me);
+        },
+
         onError: (error) => {
             addToast({ type: "error", message: error.message });
         },
-        onCompleted: (data) => {
-            console.log(data);
-        },
     });
 
-    React.useEffect(() => {
-        console.log(data);
-    }, [data]);
+    const getMorePrayers = async () => {
+        if (prayers && prayers.length > 0 && lastFetch.length > 0) {
+            const cursor: Date =
+                prayers.length === 0
+                    ? new Date()
+                    : prayers[prayers.length - 1].createdDate;
+            const { data } = await refetch({
+                cursor: format(new Date(cursor), "yyyy-MM-dd HH:mm:ss"),
+            });
+            setLastFetch(data.publicPrayers);
+            setPrayers([...prayers, ...(data.publicPrayers as Prayer[])]);
+        }
+    };
+
+    useEffect(() => {
+        getMorePrayers();
+    }, [inView]);
 
     if (loading) return <div>Loading...</div>;
     if (error) {
@@ -33,11 +67,11 @@ const PublicPrayers = () => {
         return <div>Sorry, there was an error...</div>;
     }
 
-    if (data.publicPrayers === null) {
+    if (prayers === []) {
         return <div>Returned null data</div>;
     }
 
-    if (data.publicPrayers.length === 0) {
+    if (prayers.length === 0) {
         return <div>You don't have any prayers yet!</div>;
     }
 
@@ -45,23 +79,24 @@ const PublicPrayers = () => {
         <div>
             <h1>Public Prayers</h1>
             <div className={styles.prayerContainer}>
-                {data.publicPrayers.map((P: Prayer, idx: number) => (
-                    <div key={idx}>
-                        <RenderPrayer prayer={P} me={data.me} />
-                    </div>
-                ))}
+                {prayers &&
+                    prayers.map((P: Prayer, idx: number, self: Prayer[]) => (
+                        <div key={idx}>
+                            <RenderPrayer prayer={P} me={fullUser} />
+                        </div>
+                    ))}
             </div>
             <Button
                 title="Next"
                 onClick={() => {
-                    const cursor: string =
-                        data.publicPrayers[data.publicPrayers.length - 1]
-                            .createdDate;
+                    const cursor: Date =
+                        prayers[prayers.length - 1].createdDate;
                     refetch({
-                        cursor,
+                        cursor: cursor.toString(),
                     });
                 }}
             />
+            <div ref={ref}>{`The element is in view ${inView}`}</div>
         </div>
     );
 };

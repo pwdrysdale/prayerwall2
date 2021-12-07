@@ -2,9 +2,13 @@ import { FC } from "react";
 
 import { IoClose } from "react-icons/io5";
 import { Link } from "react-router-dom";
-import { IoAddSharp, IoRemoveSharp } from "react-icons/io5";
+import {
+    IoAddSharp,
+    IoRemoveSharp,
+    IoTrashSharp,
+    IoOptionsSharp,
+} from "react-icons/io5";
 
-import { userInfo } from "../../store/userInfo";
 import { Prayer, User } from "../../types";
 
 import styles from "./RenderPrayer.module.css";
@@ -15,6 +19,7 @@ const addToListMutation = loader("../PublicPrayers/AddToList.graphql");
 const removeFromListMutation = loader(
     "../PublicPrayers/RemoveFromList.graphql"
 );
+const deletePrayerMutation = loader("../MyPrayers/deletePrayer.graphql");
 
 // items to go in the menu
 
@@ -55,7 +60,7 @@ const Menu: FC<MenuInterface> = ({
                 {!user || !user.id ? (
                     <LoggedOutItems />
                 ) : prayerUser === user.id ? (
-                    <IAmThePrayerOwner />
+                    <IAmThePrayerOwner user={user} prayerId={prayerId} />
                 ) : (
                     <LoggedInUserItems user={user} prayerId={prayerId} />
                 )}
@@ -117,10 +122,10 @@ const LoggedInUserItems: FC<LoggedInUserMenuItems> = ({ user, prayerId }) => {
 
     return (
         <>
-            <li>I am an observer of the prayer</li>
+            <h3>List Items</h3>
             {user.lists?.map((list) => (
                 <li key={list.id}>
-                    {list.name}
+                    <Link to={`/lists/${list.id}`}>{list.name}</Link>
                     {list?.prayers
                         ?.map((prayer: Partial<Prayer>) => prayer.id)
                         .includes(prayerId) ? (
@@ -176,10 +181,41 @@ const LoggedInUserItems: FC<LoggedInUserMenuItems> = ({ user, prayerId }) => {
     );
 };
 
-const IAmThePrayerOwner = () => {
+const IAmThePrayerOwner: FC<LoggedInUserMenuItems> = ({ user, prayerId }) => {
+    const [deletePrayer] = useMutation(deletePrayerMutation, {
+        awaitRefetchQueries: true,
+        // refetchQueries: [{ query: publicPrayers }],
+    });
     return (
         <>
-            <li>I am the prayer owner</li>
+            <LoggedInUserItems user={user} prayerId={prayerId} />
+            <h3>Prayer Owner Actions</h3>
+            <li>
+                <Link to={`/prayer/edit/${prayerId}`}>
+                    <div className={styles.actionStep}>
+                        Edit Prayer
+                        <IoOptionsSharp className={styles.actionIcon} />
+                    </div>
+                </Link>
+            </li>
+            <li>
+                <div
+                    className={styles.actionStep}
+                    onClick={() => {
+                        deletePrayer({
+                            variables: {
+                                id:
+                                    typeof prayerId === "string"
+                                        ? parseFloat(prayerId)
+                                        : prayerId,
+                            },
+                        });
+                    }}
+                >
+                    Delete Prayer
+                    <IoTrashSharp className={styles.actionIcon} />
+                </div>
+            </li>
         </>
     );
 };

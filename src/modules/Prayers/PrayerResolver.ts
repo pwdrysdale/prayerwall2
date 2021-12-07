@@ -55,21 +55,20 @@ export class PrayerResolver {
 
             if (cursor) {
                 options.where = {
-                    createdDate: LessThan(
-                        format(new Date(cursor), "yyyy-MM-dd HH:mm:ss")
-                    ),
+                    createdDate: LessThan(cursor),
                     privat: false,
                 };
             }
 
             const p: Prayer[] = await Prayer.find(options);
+
             if (p) {
                 if (!req.user) {
-                    console.log("Still in here");
                     const returnVal: Prayer[] = p.map(
                         (prayer: Prayer): Prayer =>
                             Object.assign(prayer, { prayedByUser: 0 })
                     );
+                    console.log(returnVal);
                     return returnVal;
                 } else {
                     const status = p.map(
@@ -81,6 +80,7 @@ export class PrayerResolver {
                                     .length,
                             })
                     );
+                    console.log(status);
                     return status;
                 }
             } else return null;
@@ -102,7 +102,7 @@ export class PrayerResolver {
 
             const p: Prayer[] = await Prayer.find({
                 where: { user: { id: req.user.id } },
-                relations: ["prayedBy"],
+                relations: ["prayedBy", "user", "comments"],
             });
 
             if (p) {

@@ -12,7 +12,7 @@ export interface Prayer {
     body: string;
     privat: boolean;
     answered: boolean;
-    category: PrayerCategory;
+    category: number;
     user: User;
     comments: [PrayerComments];
     lists: [List];

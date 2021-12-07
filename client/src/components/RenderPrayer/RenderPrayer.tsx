@@ -1,11 +1,7 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, FC } from "react";
 import { useMutation } from "@apollo/client";
 import { loader } from "graphql.macro";
-import moment from "moment";
-import React from "react";
-import ClampLines from "react-clamp-lines";
 import { Link } from "react-router-dom";
-import { useToasts } from "../../store/useToasts";
 import { Photo, Prayer, PrayerCategory, User } from "../../types";
 import styles from "./RenderPrayer.module.css";
 import ProfileImage from "../UserCards/ProfileImage";
@@ -21,12 +17,15 @@ const TextClamp = require("react-string-clamp");
 
 const followMutation = loader("../PublicPrayers/Follow.graphql");
 const publicPrayers = loader("../PublicPrayers/PublicPrayers.graphql");
-const deletePrayerMutation = loader("../MyPrayers/deletePrayer.graphql");
+
 const prayedMutation = loader("../PublicPrayers/Prayed.graphql");
 
-const RenderPrayer = ({ prayer, me }: { prayer: Prayer; me: User }) => {
-    const owner = me?.id === prayer.user.id;
+interface RenderPrayerProps {
+    prayer: Prayer;
+    me: User;
+}
 
+const RenderPrayer: FC<RenderPrayerProps> = ({ prayer, me }) => {
     const [photo, setPhoto] = useState<null | Photo>();
     const [colorClass, setColorClass] = useState<string>("");
     const [expandedText, setExpandedText] = useState<boolean>(false);
@@ -37,15 +36,6 @@ const RenderPrayer = ({ prayer, me }: { prayer: Prayer; me: User }) => {
             setPhoto(JSON.parse(prayer.photo));
         }
     }, [prayer.photo]);
-
-    const [lines, setLines] = useState(3);
-
-    useEffect(() => {
-        setLines(expandedText ? 22 : 3);
-        console.log("Called the useEffect");
-        console.log(lines);
-        return;
-    }, [expandedText]);
 
     const [prayed] = useMutation(prayedMutation, {
         awaitRefetchQueries: true,
@@ -106,10 +96,12 @@ const RenderPrayer = ({ prayer, me }: { prayer: Prayer; me: User }) => {
                     </label>
                 </div>
                 <div className={styles.buttonGroup}>
-                    <ProfileImage
-                        src={prayer.user.image}
-                        alt={prayer.user.username}
-                    />
+                    {prayer.user && (
+                        <ProfileImage
+                            src={prayer.user.image}
+                            alt={prayer.user.username}
+                        />
+                    )}
                     <div
                         className={styles.iconGroup}
                         onClick={() => {
@@ -127,7 +119,7 @@ const RenderPrayer = ({ prayer, me }: { prayer: Prayer; me: User }) => {
                         <IoArrowUpOutline className={styles.iconButton} />
                     </div>
                     <div className={styles.iconGroup}>
-                        <span>{prayer.comments.length}</span>
+                        <span>{prayer.comments?.length}</span>
                         <Link to={`/prayer/addcomment/${prayer.id}`}>
                             <IoChatboxOutline className={styles.iconButton} />
                         </Link>

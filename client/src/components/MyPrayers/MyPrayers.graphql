@@ -10,6 +10,35 @@ query Query {
         photo
         prayedBy {
             id
+            user {
+                id
+                username
+            }
+        }
+        user {
+            id
+            username
+            image
+        }
+        comments {
+            id
+        }
+        createdDate
+    }
+    me {
+        id
+        username
+        createdFollows {
+            followingId {
+                id
+            }
+        }
+        lists {
+            id
+            name
+            prayers {
+                id
+            }
         }
     }
 }

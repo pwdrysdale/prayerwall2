@@ -30,15 +30,6 @@
     opacity: 0;
 }
 
-@-webkit-keyframes fadeIn {
-    from {
-        height: 160px;
-    }
-    to {
-        height: 400px;
-    }
-}
-
 .cardMainLabel p {
     max-height: 90px;
     min-height: 0;
@@ -144,7 +135,8 @@
     cursor: pointer;
 }
 
-.actionStep:hover {
+.actionStep:hover,
+a:hover {
     color: var(--pink-red);
 }
 
@@ -153,4 +145,10 @@
     width: 20px;
     cursor: pointer;
     margin: 0.25rem;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
