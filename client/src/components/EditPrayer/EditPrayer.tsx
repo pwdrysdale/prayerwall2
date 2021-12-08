@@ -3,7 +3,8 @@ import { loader } from "graphql.macro";
 import { useMutation, useQuery } from "@apollo/client";
 import { RouteComponentProps } from "react-router-dom";
 
-import { List, PrayerCategory } from "../../types";
+import { List, Photo, PrayerCategory } from "../../types";
+import SearchPhotos from "../Photos/SearchPhotos";
 
 const onePrayerQ = loader("./onePrayer.graphql");
 const EditPrayerMutation = loader("./EditPrayer.graphql");
@@ -17,17 +18,14 @@ interface RouteParams {
 interface Component extends RouteComponentProps<RouteParams> {}
 
 const EditPrayer: React.FC<Component> = ({ match }) => {
-    // const titleRef = useRef<HTMLInputElement>(null);
-    // const bodyRef = useRef<HTMLInputElement>(null);
-    // const privateRef = useRef<HTMLInputElement>(null);
-    // const answeredRef = useRef<HTMLInputElement>(null);
-    // const categoryRef = useRef<HTMLSelectElement>(null);
     const [title, setTitle] = useState("");
     const [body, setBody] = useState("");
     const [privat, setPrivat] = useState<boolean>(true);
     const [answered, setAnswered] = useState<boolean>(false);
     const [category, setCategory] = useState<number>(0);
     const [selectedLists, setSelectedLists] = useState<number[]>([]);
+    const [selectedPhoto, setSelectedPhoto] = useState<Partial<Photo>>({});
+    const [photo, setPhoto] = useState<null | Photo>();
 
     const { id } = match.params;
 
@@ -51,13 +49,16 @@ const EditPrayer: React.FC<Component> = ({ match }) => {
 
     useEffect(() => {
         if (data && data.onePrayer) {
-            const { title, body, privat, answered, category } = data.onePrayer;
+            const { title, body, privat, answered, category, photo } =
+                data.onePrayer;
             setTitle(title);
             setBody(body);
             setPrivat(privat);
             setAnswered(answered || false);
             setCategory(category);
             setSelectedLists(data.onePrayer.lists?.map((l: List) => l.id));
+            setPhoto(photo && JSON.parse(photo));
+            setSelectedPhoto(photo && JSON.parse(photo));
         }
     }, [data]);
 
@@ -75,6 +76,7 @@ const EditPrayer: React.FC<Component> = ({ match }) => {
                         ? parseFloat(category)
                         : category,
                 lists: selectedLists,
+                photo: JSON.stringify(photo),
             };
             console.log(editPrayerInput);
             editPrayer({
@@ -96,6 +98,15 @@ const EditPrayer: React.FC<Component> = ({ match }) => {
     return (
         <div>
             Edit a prayer here
+            <div
+                style={{
+                    backgroundImage: photo?.urls?.regular
+                        ? `url(${photo?.urls?.regular})`
+                        : "none",
+                    height: "100px",
+                    width: "100px",
+                }}
+            ></div>
             <form onSubmit={onSubmit}>
                 <div className="form-group">
                     <label htmlFor="title">Title:</label>
@@ -163,6 +174,10 @@ const EditPrayer: React.FC<Component> = ({ match }) => {
                             })}
                     </select>
                 </div>
+                <SearchPhotos
+                    selectedPhoto={selectedPhoto}
+                    setSelectedPhoto={setSelectedPhoto}
+                />
                 {data.myLists.length > 0 ? (
                     <div>
                         <h3>Select the lists you want to add this prayer to</h3>

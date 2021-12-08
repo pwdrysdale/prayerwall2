@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { Photo, Prayer, PrayerCategory, User } from "../../types";
 import styles from "./RenderPrayer.module.css";
 import ProfileImage from "../UserCards/ProfileImage";
+import { useToasts } from "../../store/useToasts";
 
 import {
     IoChatboxOutline,
@@ -30,6 +31,8 @@ const RenderPrayer: FC<RenderPrayerProps> = ({ prayer, me }) => {
     const [colorClass, setColorClass] = useState<string>("");
     const [expandedText, setExpandedText] = useState<boolean>(false);
     const [showMenu, setShowMenu] = useState<boolean>(false);
+
+    const { addToast } = useToasts();
 
     useEffect(() => {
         if (prayer.photo) {
@@ -72,6 +75,9 @@ const RenderPrayer: FC<RenderPrayerProps> = ({ prayer, me }) => {
                 setExpandedText(false);
             }}
         >
+            {prayer.answered && (
+                <div className={styles.answeredBox}>Answered</div>
+            )}
             <div className={`${styles.cardMain}`}>
                 <div className={`${styles.cardTextDetail}  `}>
                     <h1 className={styles.prayerName}>{prayer.title}</h1>
@@ -79,8 +85,7 @@ const RenderPrayer: FC<RenderPrayerProps> = ({ prayer, me }) => {
                     <TypePill
                         type={PrayerCategory[prayer.category] as PrayerType}
                     />
-                    {/* {owner ? "Owner" : "Not owner"}
-                    {prayer.answered ? "Answered!" : "Not answered"} */}
+
                     <input
                         type="checkbox"
                         id="bodyText"
@@ -105,6 +110,15 @@ const RenderPrayer: FC<RenderPrayerProps> = ({ prayer, me }) => {
                     <div
                         className={styles.iconGroup}
                         onClick={() => {
+                            if (!me?.id) {
+                                addToast({
+                                    message:
+                                        "Login to register to record your prayer",
+                                    type: "error",
+                                });
+                                return;
+                            }
+
                             prayed({
                                 variables: {
                                     id:

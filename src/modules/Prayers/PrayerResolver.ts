@@ -68,7 +68,6 @@ export class PrayerResolver {
                         (prayer: Prayer): Prayer =>
                             Object.assign(prayer, { prayedByUser: 0 })
                     );
-                    console.log(returnVal);
                     return returnVal;
                 } else {
                     const status = p.map(
@@ -80,7 +79,6 @@ export class PrayerResolver {
                                     .length,
                             })
                     );
-                    console.log(status);
                     return status;
                 }
             } else return null;
@@ -140,7 +138,6 @@ export class PrayerResolver {
     ): Promise<Prayer[] | null> {
         try {
             if (!req.user) {
-                console.log("No user");
                 return null;
             }
 
@@ -155,6 +152,26 @@ export class PrayerResolver {
                     user: { id: In(ids) },
                     privat: false,
                 },
+                relations: ["user", "comments", "prayedBy", "prayedBy.user"],
+            });
+            console.log(prayers);
+            return prayers;
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
+    }
+
+    @Query(() => [Prayer])
+    async featuredPrayers(): Promise<Prayer[] | null> {
+        try {
+            const prayers = await Prayer.find({
+                where: {
+                    featured: true,
+                    privat: false,
+                },
+                relations: ["user", "comments", "prayedBy", "prayedBy.user"],
+                take: 3,
             });
             console.log(prayers);
             return prayers;
@@ -175,7 +192,6 @@ export class PrayerResolver {
         @PubSub() pubSub: PubSubEngine
     ): Promise<Prayer | null> {
         try {
-            console.log("Photo: ", JSON.parse(photo));
             if (!req.user) {
                 return null;
             }
@@ -215,33 +231,33 @@ export class PrayerResolver {
     @Mutation(() => Prayer, { nullable: true })
     async editPrayer(
         @Arg("EditPrayerInput")
-        { id, title, body, category, answered, privat, lists }: EditPrayerInput,
+        {
+            id,
+            title,
+            body,
+            category,
+            answered,
+            privat,
+            lists,
+            photo,
+        }: EditPrayerInput,
         @Ctx() { req }: AppContext
     ): Promise<Prayer | null> {
         try {
             if (!req.user) {
-                console.log("no user");
                 return null;
             }
 
-            console.log({ id, title, body, category, answered, privat, lists });
-
-            const l = await (
+            const l = (
                 await List.findByIds(lists, { relations: ["owner"] })
             ).filter((ls) => ls.owner.id === req.user.id);
-            console.log(l);
 
             const p: Prayer = await Prayer.findOne(id, {
                 relations: ["user", "comments"],
             });
-            console.log("Prayer to edit: ", p);
             if (p.user.id !== req.user.id) {
-                console.log("Not who you say you are");
-                console.log(p.user);
-                console.log(req.user);
                 return null;
             } else {
-                console.log("updating apparently");
                 const u = Object.assign(p, {
                     title,
                     body,
@@ -268,19 +284,14 @@ export class PrayerResolver {
         id: number,
         @Ctx() { req }: AppContext
     ): Promise<Boolean> {
-        console.log("In delete");
-        console.log(id);
         try {
             if (!req.user) {
                 return false;
             }
 
             const p: Prayer = await Prayer.findOne(id, { relations: ["user"] });
-            console.log(p);
-            console.log(p.user.id === req.user.id);
             if (req.user.role === UserRole.admin || p.user.id === req.user.id) {
                 await Prayer.delete(id);
-                console.log("deleted");
                 return true;
             }
             return false;

@@ -57,7 +57,7 @@ const MyPrayers = () => {
     return (
         <div>
             <h1>My Prayers</h1>
-            <div>
+            <div className="prayerContainer">
                 {data.myPrayers.map((P: Prayer, idx: number) => (
                     <RenderPrayer key={idx} prayer={P} me={data.me} />
                 ))}

@@ -24,6 +24,8 @@
     min-height: 200px;
     display: flex;
     flex-direction: column;
+    z-index: 1;
+    height: max-content;
 }
 
 .cardMain input {
@@ -39,14 +41,25 @@
     -webkit-line-clamp: 5;
     -webkit-box-orient: vertical;
     transition: all 1s ease-in-out;
-    height: calc(100%+1px);
+    height: 100%;
+    /* background: teal; */
 }
 
 .cardMainLabelChecked p {
-    height: calc(100%+1px);
     /* display: -webkit-box; */
     max-height: 395px;
-    -webkit-line-clamp: 22;
+    -webkit-line-clamp: 19;
+}
+
+.answeredBox {
+    color: white;
+    background: black;
+    border-radius: inherit;
+    text-align: center;
+    position: relative;
+    top: 120px;
+    height: 150px;
+    padding: 5px;
 }
 
 .cardTextDetail {
@@ -59,6 +72,8 @@
     justify-content: space-around;
     gap: 0.5rem;
     height: 100%;
+    position: relative;
+    top: 0;
 }
 
 .prayerName {
@@ -87,6 +102,10 @@
     align-items: center;
 }
 
+.iconGroup:hover {
+    color: var(--pink-red);
+}
+
 .iconButton {
     cursor: pointer;
     height: 40px;
@@ -102,6 +121,7 @@
     background: var(--navy);
     color: white;
     padding: 3rem 2rem;
+    z-index: 2;
 }
 
 .header {

@@ -78,7 +78,7 @@ const PublicPrayers = () => {
     return (
         <div>
             <h1>Public Prayers</h1>
-            <div className={styles.prayerContainer}>
+            <div className="prayerContainer">
                 {prayers &&
                     prayers.map((P: Prayer, idx: number, self: Prayer[]) => (
                         <div key={idx}>

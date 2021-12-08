@@ -3,6 +3,7 @@ import { loader } from "graphql.macro";
 import React, { useEffect } from "react";
 import { useToasts } from "../../store/useToasts";
 import { Prayer } from "../../types";
+import RenderPrayer from "../RenderPrayer/RenderPrayer";
 
 const GET_FOLLOWING_PRAYERS = loader("./getFollowingPrayers.graphql");
 
@@ -48,12 +49,15 @@ const FollowingPrayers = () => {
     return (
         <div>
             <h1>Prayers of those I follow</h1>
-            {data.getFollowingPrayers?.map((prayer: Prayer) => (
-                <div key={prayer.id}>
-                    <h2>{prayer.title}</h2>
-                    <p>{prayer.body}</p>
-                </div>
-            )) ?? <p>No prayers to show - Follow someone!</p>}
+            <div className="prayerContainer">
+                {data.getFollowingPrayers?.map((prayer: Prayer) => (
+                    <RenderPrayer
+                        prayer={prayer}
+                        me={data.me}
+                        key={prayer.id}
+                    />
+                )) ?? <p>No prayers to show - Follow someone!</p>}
+            </div>
         </div>
     );
 };
