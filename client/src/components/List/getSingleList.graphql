@@ -5,12 +5,46 @@ query SingleList($singleListId: Float!) {
         name
         description
         prayers {
+            id
             title
             body
             category
+            answered
+            privat
+            prayedByUser
+            photo
+            prayedBy {
+                id
+                user {
+                    id
+                    username
+                }
+            }
             user {
-                image
+                id
                 username
+                image
+            }
+            comments {
+                id
+            }
+            createdDate
+        }
+    }
+
+    me {
+        id
+        username
+        createdFollows {
+            followingId {
+                id
+            }
+        }
+        lists {
+            id
+            name
+            prayers {
+                id
             }
         }
     }

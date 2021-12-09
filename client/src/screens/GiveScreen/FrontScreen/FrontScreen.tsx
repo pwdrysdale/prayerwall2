@@ -20,8 +20,6 @@ const FrontScreen = () => {
         },
     });
 
-    useEffect(() => console.log(data), [data]);
-
     return (
         <>
             <div

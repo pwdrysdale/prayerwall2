@@ -76,14 +76,14 @@ const SearchPhotos: React.FC<PhotoSearchProps> = ({
             ) : photos.length === 0 ? (
                 <h1>No Photos Found</h1>
             ) : (
-                photos.map((p) => (
+                photos.map((p, idx: number) => (
                     <div
                         onClick={() => {
                             setSelectedPhoto(p);
                         }}
-                        key={p.id}
+                        key={idx}
                     >
-                        {p.id === selectedPhoto.id && (
+                        {p?.id === selectedPhoto?.id && (
                             <p>This one is selected</p>
                         )}
                         <img src={p.urls.small} alt={p.alt_description} />

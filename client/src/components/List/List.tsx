@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { RouteComponentProps, Redirect } from "react-router-dom";
 import { loader } from "graphql.macro";
 import { useMutation, useQuery } from "@apollo/client";
 import { Prayer } from "../../types";
 import Button from "../HTML/Button";
 import Card from "../UserCards/Card";
+import RenderPrayer from "../RenderPrayer/RenderPrayer";
+import { useToasts } from "../../store/useToasts";
+import { userInfo } from "../../store/userInfo";
 
 const LIST_QUERY = loader("./getSingleList.graphql");
 const GET_LISTS_QUERY = loader("../MyLists/MyLists.graphql");
@@ -18,12 +21,21 @@ interface Component extends RouteComponentProps<RouteParams> {}
 
 const List: React.FC<Component> = ({ match }) => {
     const id = match.params.id;
+    const { addToast } = useToasts();
+    const { user } = userInfo();
 
     const { loading, error, data } = useQuery(LIST_QUERY, {
         variables: {
             singleListId: typeof id === "string" ? parseFloat(id) : id,
         },
+        onError: (err) => {
+            addToast({ message: err.message, type: "error" });
+        },
     });
+
+    useEffect(() => {
+        console.log(data);
+    }, [data]);
 
     const [deleteList, { data: listDeleted }] = useMutation(
         DELETE_LIST_MUTATION,
@@ -35,6 +47,10 @@ const List: React.FC<Component> = ({ match }) => {
         }
     );
 
+    if (!user.id) {
+        <Redirect to="/" />;
+    }
+
     if (loading) return <p>Loading...</p>;
 
     if (error) return <p>Error :(</p>;
@@ -43,21 +59,16 @@ const List: React.FC<Component> = ({ match }) => {
 
     return (
         <div>
-            <h1>{data.singleList.name}</h1>
-            <p>{data.singleList.description}</p>
+            <h1>{data.singleList?.name}</h1>
+            <p>{data.singleList?.description}</p>
             <Button onClick={() => deleteList()}>Delete List</Button>
             {data.singleList.privat ? <p>Private</p> : <p>Public</p>}
             <h3>Prayers In This List</h3>
-            {data.singleList.prayers.map((prayer: Prayer, idx: number) => (
-                <div key={idx}>
-                    <h3>{prayer.title}</h3>
-                    <p>{prayer.body}</p>
-                    <Card
-                        img={prayer.user.image}
-                        username={prayer.user.username}
-                    />
-                </div>
-            ))}
+            <div className="prayerContainer">
+                {data.singleList.prayers.map((prayer: Prayer, idx: number) => (
+                    <RenderPrayer me={data.me} prayer={prayer} key={idx} />
+                ))}
+            </div>
         </div>
     );
 };

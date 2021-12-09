@@ -58,9 +58,15 @@ const MyPrayers = () => {
         <div>
             <h1>My Prayers</h1>
             <div className="prayerContainer">
-                {data.myPrayers.map((P: Prayer, idx: number) => (
-                    <RenderPrayer key={idx} prayer={P} me={data.me} />
-                ))}
+                {[...data.myPrayers]
+                    .sort(
+                        (a: Prayer, b: Prayer) =>
+                            new Date(b.createdDate).valueOf() -
+                            new Date(a.createdDate).valueOf()
+                    )
+                    .map((P: Prayer, idx: number) => (
+                        <RenderPrayer key={idx} prayer={P} me={data.me} />
+                    ))}
             </div>
         </div>
     );

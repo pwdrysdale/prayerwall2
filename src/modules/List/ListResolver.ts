@@ -36,10 +36,15 @@ export class ListResolver {
         @Ctx() { req }: AppContext,
         @Arg("id") id: number
     ): Promise<List | null> {
-        console.log("Got to the route at least");
         try {
             const list = await List.findOne(id, {
-                relations: ["owner", "prayers", "prayers.user"],
+                relations: [
+                    "owner",
+                    "prayers",
+                    "prayers.user",
+                    "prayers.lists",
+                    "prayers.comments",
+                ],
             });
             if (list.owner.id === req.user.id || list.privat !== true) {
                 return list;

@@ -1,0 +1,3 @@
+mutation MARK_AS_ANSWERED($id: Float!) {
+    markAsAnswered(id: $id)
+}

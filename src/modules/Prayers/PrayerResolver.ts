@@ -265,6 +265,7 @@ export class PrayerResolver {
                     answered,
                     privat,
                     lists: l,
+                    photo,
                 });
 
                 const d: Prayer = await u.save();
@@ -272,6 +273,32 @@ export class PrayerResolver {
             }
         } catch {
             return null;
+        }
+    }
+
+    // Update a prayer to answered
+    // Auth: Must be the owner of the prayer
+    // @Authorized([UserRole.admin, UserRole.loggedIn])
+    @Mutation(() => Boolean)
+    async markAsAnswered(
+        @Arg("id") id: number,
+        @Ctx() { req }: AppContext
+    ): Promise<boolean> {
+        try {
+            if (!req.user) {
+                return false;
+            }
+
+            const p: Prayer = await Prayer.findOne(id, { relations: ["user"] });
+            if (p.user.id !== req.user.id) {
+                return false;
+            }
+
+            p.answered = true;
+            await p.save();
+            return true;
+        } catch {
+            return false;
         }
     }
 

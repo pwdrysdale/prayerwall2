@@ -78,3 +78,7 @@ a {
     grid-template-columns: repeat(3, 1fr);
     gap: 56px;
 }
+
+.clickable {
+    cursor: pointer;
+}

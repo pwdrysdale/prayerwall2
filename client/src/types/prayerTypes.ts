@@ -18,6 +18,6 @@ export interface Prayer {
     lists: [List];
     prayedBy?: [PrayedBy];
     prayedByUser: number;
-    createdDate: Date;
+    createdDate: string;
     photo?: string;
 }

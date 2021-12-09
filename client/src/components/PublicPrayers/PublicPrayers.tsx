@@ -45,7 +45,7 @@ const PublicPrayers = () => {
 
     const getMorePrayers = async () => {
         if (prayers && prayers.length > 0 && lastFetch.length > 0) {
-            const cursor: Date =
+            const cursor: any =
                 prayers.length === 0
                     ? new Date()
                     : prayers[prayers.length - 1].createdDate;
@@ -80,16 +80,22 @@ const PublicPrayers = () => {
             <h1>Public Prayers</h1>
             <div className="prayerContainer">
                 {prayers &&
-                    prayers.map((P: Prayer, idx: number, self: Prayer[]) => (
-                        <div key={idx}>
-                            <RenderPrayer prayer={P} me={fullUser} />
-                        </div>
-                    ))}
+                    prayers
+                        .sort(
+                            (a: Prayer, b: Prayer) =>
+                                new Date(b.createdDate).valueOf() -
+                                new Date(a.createdDate).valueOf()
+                        )
+                        .map((P: Prayer, idx: number, self: Prayer[]) => (
+                            <div key={idx}>
+                                <RenderPrayer prayer={P} me={fullUser} />
+                            </div>
+                        ))}
             </div>
             <Button
                 title="Next"
                 onClick={() => {
-                    const cursor: Date =
+                    const cursor: string =
                         prayers[prayers.length - 1].createdDate;
                     refetch({
                         cursor: cursor.toString(),

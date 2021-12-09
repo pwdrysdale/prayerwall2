@@ -1,7 +1,7 @@
 import React, { useEffect, useState, FormEvent, useCallback } from "react";
 import { loader } from "graphql.macro";
 import { useMutation, useQuery } from "@apollo/client";
-import { RouteComponentProps } from "react-router-dom";
+import { RouteComponentProps, Redirect } from "react-router-dom";
 
 import { List, Photo, PrayerCategory } from "../../types";
 import SearchPhotos from "../Photos/SearchPhotos";
@@ -18,6 +18,7 @@ interface RouteParams {
 interface Component extends RouteComponentProps<RouteParams> {}
 
 const EditPrayer: React.FC<Component> = ({ match }) => {
+    const [redirect, setRedirect] = useState(false);
     const [title, setTitle] = useState("");
     const [body, setBody] = useState("");
     const [privat, setPrivat] = useState<boolean>(true);
@@ -41,6 +42,9 @@ const EditPrayer: React.FC<Component> = ({ match }) => {
             { query: MyPrayerQuery },
             { query: PublicPrayerQuery, variables: { cursor: "" } },
         ],
+        onCompleted: () => {
+            setRedirect(true);
+        },
     });
 
     useEffect(() => {
@@ -57,8 +61,8 @@ const EditPrayer: React.FC<Component> = ({ match }) => {
             setAnswered(answered || false);
             setCategory(category);
             setSelectedLists(data.onePrayer.lists?.map((l: List) => l.id));
-            setPhoto(photo && JSON.parse(photo));
-            setSelectedPhoto(photo && JSON.parse(photo));
+            setPhoto(photo ? JSON.parse(photo) : null);
+            setSelectedPhoto(photo ? JSON.parse(photo) : null);
         }
     }, [data]);
 
@@ -76,17 +80,30 @@ const EditPrayer: React.FC<Component> = ({ match }) => {
                         ? parseFloat(category)
                         : category,
                 lists: selectedLists,
-                photo: JSON.stringify(photo),
+                photo: JSON.stringify(selectedPhoto),
             };
-            console.log(editPrayerInput);
             editPrayer({
                 variables: {
                     editPrayerInput,
                 },
             });
         },
-        [editPrayer, body, privat, answered, category, id, title, selectedLists]
+        [
+            editPrayer,
+            body,
+            privat,
+            answered,
+            category,
+            id,
+            title,
+            selectedLists,
+            selectedPhoto,
+        ]
     );
+
+    if (redirect) {
+        return <Redirect to="/prayer/my" />;
+    }
 
     if (loading) {
         return <div>Loading...</div>;

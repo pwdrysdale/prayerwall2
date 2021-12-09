@@ -7,12 +7,15 @@ import SearchPhotos from "../Photos/SearchPhotos";
 
 import { Photo, PrayerCategory } from "../../types";
 import { useToasts } from "../../store/useToasts";
+import { Redirect } from "react-router-dom";
 const GET_LISTS = loader("./GetLists.graphql");
 const AddPrayerMutation = loader("./AddPrayer.graphql");
 const MyPrayerQuery = loader("../MyPrayers/MyPrayers.graphql");
 const PublicPrayerQuery = loader("../PublicPrayers/PublicPrayers.graphql");
 
 const AddPrayer = () => {
+    const [redirect, setRedirect] = useState(false);
+
     const titleRef = useRef<HTMLInputElement>(null);
     const bodyRef = useRef<HTMLInputElement>(null);
     const privateRef = useRef<HTMLInputElement>(null);
@@ -46,6 +49,13 @@ const AddPrayer = () => {
                   })
                 : addToast({ message: err.message, type: "error" });
         },
+        onCompleted: (data) => {
+            addToast({
+                message: `${data.addPrayer.message} added!`,
+                type: "success",
+            });
+            setRedirect(true);
+        },
     });
 
     const onSubmit = useCallback(
@@ -77,6 +87,7 @@ const AddPrayer = () => {
         [addPrayer, selectedLists, selectedPhoto]
     );
 
+    if (redirect) return <Redirect to="/prayer/my" />;
     if (listLoading) return <div>Loading...</div>;
     if (listError)
         return <div>There was an error getting your lists, sorry</div>;
