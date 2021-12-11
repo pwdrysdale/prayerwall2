@@ -76,9 +76,7 @@ const Navbar = () => {
                                 <Link to="/lists/my">
                                     <li>My Lists</li>
                                 </Link>
-                                <Link to="/lists/add">
-                                    <li>Add A List</li>
-                                </Link>
+
                                 <li onClick={logout}>Log out</li>
                             </>
                         ) : (

@@ -269,6 +269,7 @@ export class PrayerResolver {
                 });
 
                 const d: Prayer = await u.save();
+
                 return d;
             }
         } catch {
@@ -282,7 +283,8 @@ export class PrayerResolver {
     @Mutation(() => Boolean)
     async markAsAnswered(
         @Arg("id") id: number,
-        @Ctx() { req }: AppContext
+        @Ctx() { req }: AppContext,
+        @PubSub() pubSub: PubSubEngine
     ): Promise<boolean> {
         try {
             if (!req.user) {
@@ -296,6 +298,14 @@ export class PrayerResolver {
 
             p.answered = true;
             await p.save();
+
+            if (!p.privat) {
+                const event = `${req.user.username} updated the prayer \"${p.title}\" to answered!`;
+                pubSub.publish("EVENTS", {
+                    event,
+                });
+            }
+
             return true;
         } catch {
             return false;

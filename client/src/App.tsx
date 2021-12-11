@@ -25,6 +25,8 @@ import { useQuery } from "@apollo/client";
 import { useToasts } from "./store/useToasts";
 import { loader } from "graphql.macro";
 import Footer from "./components/Footer/Footer";
+import Events from "./components/Events/Events";
+import EditList from "./components/EditList/EditList";
 
 const Me = loader("./screens/AuthScreen/Me.graphql");
 
@@ -77,11 +79,13 @@ function App() {
                     />
                     <Route path="/lists/my" component={MyLists} exact />
                     <Route path="/lists/add" component={AddList} exact />
+                    <Route path="/lists/edit/:id" component={EditList} exact />
                     <Route path="/lists/:id" component={List} exact />
                     <Route path="/user/following" component={Following} exact />
                     <Route path="/user/:id" component={User} exact />
                     <Route path="/give" component={GiveScreen} exact />
                 </Switch>
+                <Events />
             </div>
             <Footer />
             <Toasts />

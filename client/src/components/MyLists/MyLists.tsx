@@ -4,6 +4,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useToasts } from "../../store/useToasts";
 import { List, Prayer } from "../../types";
+import Button from "../HTML/Button";
+import MyListsListItem from "./MyListsListItem";
 
 const GET_MY_LISTS = loader("./MyLists.graphql");
 
@@ -29,35 +31,12 @@ const MyLists = () => {
         return (
             <div>
                 <h1>My Lists</h1>
-                {data.myLists?.map((list: List) => {
-                    return (
-                        <div key={list.id}>
-                            <Link to={`/lists/${list.id}`}>
-                                <h1>{list.name}</h1>
-                            </Link>
-                            <div>{list.description}</div>
-                            <div>{list.length}</div>
-                            <div>{list.privat ? "Private" : "Public"}</div>
-
-                            {!list.prayers.length ? (
-                                <div>This list is empty </div>
-                            ) : (
-                                <div>
-                                    <h2>Prayers</h2>
-                                    {list.prayers.map((P: Prayer) => {
-                                        return (
-                                            <div key={P.id}>
-                                                {P.title}
-                                                {P.body}
-                                                {P.user.username}
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            )}
-                        </div>
-                    );
-                })}
+                <Link to="/lists/add">
+                    <Button title="Create a new list" />
+                </Link>
+                {data.myLists?.map((list: List) => (
+                    <MyListsListItem key={list.id} list={list} />
+                ))}
             </div>
         );
     }

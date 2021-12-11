@@ -32,6 +32,10 @@ export class List extends BaseEntity {
     @Column()
     description: string;
 
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    photo: string;
+
     @Field(() => Float)
     get length(): number {
         return this.prayers.filter((P: Prayer) => P.privat === false).length;

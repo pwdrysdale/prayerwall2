@@ -4,6 +4,7 @@ query SingleList($singleListId: Float!) {
         privat
         name
         description
+        photo
         prayers {
             id
             title

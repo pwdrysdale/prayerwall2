@@ -1,0 +1,5 @@
+mutation Mutation($editListInput: EditListInput!) {
+    editList(EditListInput: $editListInput) {
+        name
+    }
+}

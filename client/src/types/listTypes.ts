@@ -9,5 +9,6 @@ export interface List {
     createdDate: Date;
     updateDate: Date;
     owner: User;
+    photo?: string;
     prayers: [Prayer];
 }

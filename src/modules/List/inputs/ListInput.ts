@@ -13,4 +13,7 @@ export class ListInput {
 
     @Field()
     privat: boolean;
+
+    @Field({ nullable: true })
+    photo: string;
 }

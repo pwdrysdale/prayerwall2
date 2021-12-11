@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { RouteComponentProps, Redirect } from "react-router-dom";
 import { loader } from "graphql.macro";
 import { useMutation, useQuery } from "@apollo/client";
-import { Prayer } from "../../types";
+import { Photo, Prayer } from "../../types";
 import Button from "../HTML/Button";
 import Card from "../UserCards/Card";
 import RenderPrayer from "../RenderPrayer/RenderPrayer";
@@ -24,12 +24,17 @@ const List: React.FC<Component> = ({ match }) => {
     const { addToast } = useToasts();
     const { user } = userInfo();
 
+    const [photo, setPhoto] = useState<null | Photo>();
+
     const { loading, error, data } = useQuery(LIST_QUERY, {
         variables: {
             singleListId: typeof id === "string" ? parseFloat(id) : id,
         },
         onError: (err) => {
             addToast({ message: err.message, type: "error" });
+        },
+        onCompleted: (data) => {
+            setPhoto(JSON.parse(data.singleList.photo));
         },
     });
 
@@ -61,6 +66,7 @@ const List: React.FC<Component> = ({ match }) => {
         <div>
             <h1>{data.singleList?.name}</h1>
             <p>{data.singleList?.description}</p>
+            {photo?.id && <img src={photo?.urls?.regular} alt="" />}
             <Button onClick={() => deleteList()}>Delete List</Button>
             {data.singleList.privat ? <p>Private</p> : <p>Public</p>}
             <h3>Prayers In This List</h3>

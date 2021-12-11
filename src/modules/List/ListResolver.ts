@@ -12,6 +12,7 @@ import { Prayer } from "../../entity/Prayer";
 import { User } from "../../entity/User";
 import { AppContext } from "../../utlis/context";
 import { AddRemovePrayerToListInputs } from "../Prayers/inputs/AddPrayerToListInputs";
+import { EditListInput } from "./inputs/EditListInput";
 import { ListInput } from "./inputs/ListInput";
 
 @Resolver()
@@ -59,7 +60,7 @@ export class ListResolver {
     @Mutation(() => List, { nullable: true })
     async createList(
         @Ctx() { req }: AppContext,
-        @Arg("ListInput") { name, description, privat }: ListInput
+        @Arg("ListInput") { name, description, privat, photo }: ListInput
     ): Promise<List | null> {
         try {
             const user = await User.findOne(req.user.id);
@@ -68,8 +69,34 @@ export class ListResolver {
                 description,
                 privat,
                 owner: user,
+                photo,
             }).save();
         } catch {
+            return null;
+        }
+    }
+
+    @Mutation(() => List, { nullable: true })
+    async editList(
+        @Ctx() { req }: AppContext,
+        @Arg("EditListInput")
+        { id, name, description, privat, photo }: EditListInput
+    ): Promise<List | null> {
+        try {
+            const list = await List.findOne(id, {
+                relations: ["owner"],
+            });
+            if (list.owner.id === req.user.id) {
+                list.name = name;
+                list.description = description;
+                list.privat = privat;
+                list.photo = photo;
+                await list.save();
+                return list;
+            }
+            return null;
+        } catch (err) {
+            console.log(err);
             return null;
         }
     }

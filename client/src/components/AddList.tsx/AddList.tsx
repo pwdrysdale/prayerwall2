@@ -3,6 +3,7 @@ import { loader } from "graphql.macro";
 import React from "react";
 import { useToasts } from "../../store/useToasts";
 import Button from "../HTML/Button";
+import SearchPhotos from "../Photos/SearchPhotos";
 
 const ADD_LIST = loader("./addList.graphql");
 
@@ -10,6 +11,7 @@ const AddList = () => {
     const [name, setName] = React.useState("");
     const [description, setDescription] = React.useState("");
     const [privat, setPrivat] = React.useState(false);
+    const [photo, setPhoto] = React.useState({});
 
     const { addToast } = useToasts();
 
@@ -29,6 +31,7 @@ const AddList = () => {
                     name,
                     description,
                     privat,
+                    photo: JSON.stringify(photo),
                 },
             },
         });
@@ -63,6 +66,12 @@ const AddList = () => {
                         id="privat"
                         checked={privat}
                         onChange={(e) => setPrivat(!privat)}
+                    />
+                </div>
+                <div>
+                    <SearchPhotos
+                        selectedPhoto={photo}
+                        setSelectedPhoto={setPhoto}
                     />
                 </div>
                 <Button type="submit">Submit</Button>
